@@ -6,8 +6,6 @@ public class DungeonTales extends JFrame {
         setExtendedState(MAXIMIZED_BOTH);
         setTitle("| Dungeon Tales |");
         
-        // Hey jordan, how are you?
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }

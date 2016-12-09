@@ -1,10 +1,3 @@
-/*
-DungeonTales.java
-Justin, Alex, and Jerry
-12/7/2016
-Fun 2D platform game
- */
-
 import javax.swing.JFrame;
 
 public class DungeonTales extends JFrame {

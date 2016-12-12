@@ -48,5 +48,5 @@ public class DungeonTales extends JFrame {
         // Activate the constructor, and create the frame.
         new DungeonTales();
     }
-    
+   
 }

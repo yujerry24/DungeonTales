@@ -79,6 +79,11 @@ public class DungeonTales extends JFrame {
 			UnsupportedAudioFileException {
 		File sound = new File(file);
 
+		if(!sound.exists()){
+			System.out.println("[ERROR] Sound file not found.");
+			return;
+		}
+				
 		AudioInputStream stream = AudioSystem.getAudioInputStream(sound);
 		clip = AudioSystem.getClip();
 		clip.open(stream);

@@ -1,4 +1,10 @@
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,7 +20,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class DungeonTales extends JFrame {
 
@@ -74,7 +86,7 @@ public class DungeonTales extends JFrame {
 	static Image door;
 	static Image knight;
 
-	static class Level extends JLayeredPane {
+	static class Level extends JPanel {
 
 		private int level;
 		private int spawnX, spawnY, endX, endY;
@@ -92,8 +104,10 @@ public class DungeonTales extends JFrame {
 			g.drawImage(door, getEndX(), getEndY(), 187, 187, null);
 			if (p.isVisible()) {
 				g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
-			} else {
-
+			}
+			
+			for(Rectangle r : getPlatforms()){
+				g.fillRect((int) r.getBounds().getMinX(),(int) r.getBounds().getMinY(), (int)r.getBounds().getMaxX(),(int) r.getBounds().getMaxY());
 			}
 
 		}
@@ -106,6 +120,8 @@ public class DungeonTales extends JFrame {
 			this.endX = endX;
 			this.endY = endY;
 			this.p = p;
+			p.setX(spawnX);
+			p.setY(spawnY);
 			this.platforms = platforms;
 			this.isCompleted = false;
 			LevelManager.levels[level - 1] = this;
@@ -115,10 +131,6 @@ public class DungeonTales extends JFrame {
 					repaint();
 				}
 			};
-
-			if (p == null) {
-				return;
-			}
 
 			Timer timer = new Timer(20, al);
 			timer.start();
@@ -148,6 +160,10 @@ public class DungeonTales extends JFrame {
 			return this.isCompleted;
 		}
 
+		public Rectangle[] getPlatforms(){
+			return this.platforms;
+		}
+		
 	}
 
 	static class LevelManager {
@@ -410,9 +426,10 @@ public class DungeonTales extends JFrame {
 
 	static DungeonTales tales;
 
-	public static void registerLevels() {
-		// TODO Set players location to the spawn point if loading for the first
-		// time.
+	public static void registerLevels() {	
+		// TODO Set players location to the spawn point if loading for the first time
 	}
+	
+
 
 }

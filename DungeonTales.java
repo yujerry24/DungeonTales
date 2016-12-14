@@ -86,12 +86,12 @@ public class DungeonTales extends JFrame implements ActionListener{
   
   Dimension dimB = new Dimension (200 , 60);
   
-  // back.setLocation (100,100);
-   // back.setPreferredSize (dimB);
+    // back.setLocation (100,100);
+    // back.setPreferredSize (dimB);
     //panel1.add(back);
-   // panel2.add(back);
-   // panel3.add(back);
-   // panel4.add(back);
+    // panel2.add(back);
+    // panel3.add(back);
+    // panel4.add(back);
     //panel5.add(back);
     back.addActionListener(this);
     

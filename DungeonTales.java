@@ -24,7 +24,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -105,9 +104,11 @@ public class DungeonTales extends JFrame {
 			if (p.isVisible()) {
 				g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
 			}
-			
-			for(Rectangle r : getPlatforms()){
-				g.fillRect((int) r.getBounds().getMinX(),(int) r.getBounds().getMinY(), (int)r.getBounds().getMaxX(),(int) r.getBounds().getMaxY());
+
+			for (Rectangle r : getPlatforms()) {
+				g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
+						.getMinY(), (int) r.getBounds().getMaxX(), (int) r
+						.getBounds().getMaxY());
 			}
 
 		}
@@ -160,23 +161,21 @@ public class DungeonTales extends JFrame {
 			return this.isCompleted;
 		}
 
-		public Rectangle[] getPlatforms(){
+		public Rectangle[] getPlatforms() {
 			return this.platforms;
 		}
-		
+
 	}
 
 	static class LevelManager {
 		public static Level[] levels = new Level[1];
 
 		public static Level getLevel(int level) {
-
 			for (Level l : levels) {
 				if (l.getLevel() == level) {
 					return l;
 				}
 			}
-
 			return null;
 		}
 	}
@@ -402,19 +401,20 @@ public class DungeonTales extends JFrame {
 			PrintWriter out = new PrintWriter(save);
 			out.println("- DUNGEON TALES SAVE FILE -");
 			out.close();
-		} else {
-			Scanner input = new Scanner(save);
-			while (input.hasNext()) {
-				String line = input.nextLine();
-				if (line.indexOf("Player Name:") != -1) {
-					String name = getFileValue(line);
-					p = new Player(name);
-				} else {
-					p = new Player("John");
-				}
-			}
-			input.close();
+			p = new Player("John");
 		}
+
+		Scanner input = new Scanner(save);
+		while (input.hasNext()) {
+			String line = input.nextLine();
+			if (line.indexOf("Player Name:") != -1) {
+				String name = getFileValue(line);
+				p = new Player(name);
+			}else{
+				p = new Player("John");
+			}
+		}
+		input.close();
 
 		// Register levels
 		registerLevels();
@@ -426,10 +426,8 @@ public class DungeonTales extends JFrame {
 
 	static DungeonTales tales;
 
-	public static void registerLevels() {	
-		// TODO Set players location to the spawn point if loading for the first time
-	}
-	
+	public static void registerLevels() {
 
+	}
 
 }

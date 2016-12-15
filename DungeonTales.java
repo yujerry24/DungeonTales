@@ -106,13 +106,12 @@ public class DungeonTales extends JFrame {
 			if (p.isVisible()) {
 				g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
 			}
-
-			for (Rectangle r : getPlatforms()) {
-				g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
-						.getMinY(), (int) r.getBounds().getMaxX(), (int) r
-						.getBounds().getMaxY());
-			}
-
+			
+for (Rectangle r : getPlatforms()) {				
+g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()						
+.getMinY(), (int) r.getBounds().getMaxX(), (int) r						
+.getBounds().getMaxY());			
+}
 		}
 
 		public Level(int level, int spawnX, int spawnY, int endX, int endY,

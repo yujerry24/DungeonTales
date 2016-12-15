@@ -1,3 +1,4 @@
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -24,6 +25,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -172,12 +174,15 @@ public class DungeonTales extends JFrame {
 
 		public static Level getLevel(int level) {
 			for (Level l : levels) {
+				if(l == null){
+					return null;
+				}
 				if (l.getLevel() == level) {
 					return l;
 				}
 			}
 			return null;
-		}
+		} 
 	}
 
 	static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -189,7 +194,7 @@ public class DungeonTales extends JFrame {
 		setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		setResizable(false);
 		setTitle("| Dungeon Tales |");
-
+		
 		KeyListener kl = new KeyListener() {
 
 			public void keyTyped(KeyEvent arg0) {
@@ -315,12 +320,22 @@ public class DungeonTales extends JFrame {
 		JPanel panel = this;
 
 		public MainMenu() {
+			
+			final Level tutorial = LevelManager.getLevel(0);
+			final Level one = LevelManager.getLevel(1);
+			final Level two = LevelManager.getLevel(2);
+			final Level three = LevelManager.getLevel(3);
+			
 			ActionListener al = new ActionListener() {
 
 				public void actionPerformed(ActionEvent event) {
 					JButton button = (JButton) event.getSource();
 					if (button == buttonT) {
-						setContentPane(panel1);
+						if(tutorial == null){
+							System.out.println("[ERROR] Unable to load level.");
+							return;
+						}
+						setContentPane(tutorial);
 						tales.validate();
 					} else if (button == back) {
 						tales.setContentPane(panel);
@@ -329,13 +344,25 @@ public class DungeonTales extends JFrame {
 						tales.setContentPane(panel5);
 						tales.validate();
 					} else if (button == button2) {
-						setContentPane(panel2);
+						if(one == null){
+							System.out.println("[ERROR] Unable to load level.");
+							return;
+						}
+						setContentPane(one);
 						tales.validate();
 					} else if (button == button3) {
-						setContentPane(panel3);
+						if(two == null){
+							System.out.println("[ERROR] Unable to load level.");
+							return;
+						}
+						setContentPane(two);
 						tales.validate();
 					} else {
-						setContentPane(panel4);
+						if(three == null){
+							System.out.println("[ERROR] Unable to load level.");
+							return;
+						}
+						setContentPane(three);
 						tales.validate();
 					}
 				}
@@ -382,7 +409,7 @@ public class DungeonTales extends JFrame {
 
 			panel1.setBackground(new Color(100, 100, 100));
 
-			ImageIcon logo = new ImageIcon("logo.fw.png");
+			ImageIcon logo = new ImageIcon("Logo.png");
 			JLabel label3 = new JLabel(logo);
 			label3.setPreferredSize(new Dimension(1000, 800));
 			label3.setLocation(500, 500);
@@ -427,7 +454,8 @@ public class DungeonTales extends JFrame {
 	static DungeonTales tales;
 
 	public static void registerLevels() {
-
+		Rectangle[] onePlats = {new Rectangle(10, 10, 30, 30)};
+		Level one = new Level(1, 20, 20, 50, 50, p, onePlats);
 	}
 
 }

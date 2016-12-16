@@ -1,4 +1,4 @@
-
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -21,6 +21,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,7 +46,6 @@ public class DungeonTales extends JFrame {
 			y = 0;
 			this.name = name;
 			this.isVisible = false;
-
 		}
 
 		public String getName() {
@@ -86,6 +86,7 @@ public class DungeonTales extends JFrame {
 
 	static Image door;
 	static Image knight;
+	static Image pause;
 
 	static class Level extends JPanel {
 
@@ -106,16 +107,17 @@ public class DungeonTales extends JFrame {
 			if (p.isVisible()) {
 				g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
 			}
-			
-for (Rectangle r : getPlatforms()) {				
-g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()						
-.getMinY(), (int) r.getBounds().getMaxX(), (int) r						
-.getBounds().getMaxY());			
-}
+
+			for (Rectangle r : getPlatforms()) {
+				g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
+						.getMinY(), (int) r.getWidth(), (int) r.getHeight());
+			}
+
 		}
 
 		public Level(int level, int spawnX, int spawnY, int endX, int endY,
 				Player p, Rectangle[] platforms) {
+		//	setLayout(new BorderLayout());
 			this.level = level;
 			this.spawnX = spawnX;
 			this.spawnY = spawnY;
@@ -124,6 +126,7 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 			this.p = p;
 			p.setX(spawnX);
 			p.setY(spawnY);
+			p.setVisible(true);
 			this.platforms = platforms;
 			this.isCompleted = false;
 			LevelManager.levels[level - 1] = this;
@@ -134,7 +137,7 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 				}
 			};
 
-			Timer timer = new Timer(20, al);
+			Timer timer = new Timer(10, al);
 			timer.start();
 		}
 
@@ -173,7 +176,7 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 
 		public static Level getLevel(int level) {
 			for (Level l : levels) {
-				if(l == null){
+				if (l == null) {
 					return null;
 				}
 				if (l.getLevel() == level) {
@@ -181,7 +184,7 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 				}
 			}
 			return null;
-		} 
+		}
 	}
 
 	static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -193,36 +196,7 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 		setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		setResizable(false);
 		setTitle("| Dungeon Tales |");
-		
-		KeyListener kl = new KeyListener() {
 
-			public void keyTyped(KeyEvent arg0) {
-			}
-
-			public void keyReleased(KeyEvent arg0) {
-			}
-
-			public void keyPressed(KeyEvent e) {
-				int key = e.getKeyCode();
-
-				if (p.getX() > SCREEN_WIDTH - 140) {
-					p.setX(p.getX() - 5);
-				}
-				if (p.getX() < 10) {
-					p.setX(p.getX() + 5);
-				}
-
-				if (key == KeyEvent.VK_RIGHT) {
-					p.setX(p.getX() + 5);
-				}
-				if (key == KeyEvent.VK_LEFT) {
-					p.setX(p.getX() - 5);
-				}
-
-			}
-		};
-
-		addKeyListener(kl);
 
 		try {
 			playMusicFile("MenuMusic.wav", true);
@@ -233,18 +207,20 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 		} catch (UnsupportedAudioFileException e) {
 		}
 
-		p.setVisible(true);
-
 		// Set the menu pane.
-		MainMenu menu = new MainMenu();
-
+		menu = new MainMenu();
 		add(menu);
 
+		addKeyListener(kl);
+		this.requestFocusInWindow();
+		this.setFocusable(true);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
 	static Clip clip;
+	static MainMenu menu;
 
 	public static void playMusicFile(String file, boolean loop)
 			throws IOException, LineUnavailableException,
@@ -302,6 +278,34 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 			return true;
 		}
 	}
+	
+	static KeyListener kl = new KeyListener() {
+
+		public void keyTyped(KeyEvent arg0) {
+		}
+
+		public void keyReleased(KeyEvent arg0) {
+		}
+
+		public void keyPressed(KeyEvent e) {
+			int key = e.getKeyCode();
+		
+			if (p.getX() > SCREEN_WIDTH - 140) {
+				p.setX(p.getX() - 5);
+			}
+			if (p.getX() < 10) {
+				p.setX(p.getX() + 5);
+			}
+
+			if (key == KeyEvent.VK_RIGHT) {
+				p.setX(p.getX() + 5);
+			}
+			if (key == KeyEvent.VK_LEFT) {
+				p.setX(p.getX() - 5);
+			}
+
+		}
+	};
 
 	// Main menu panel
 	class MainMenu extends JPanel {
@@ -319,22 +323,35 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 		JPanel panel = this;
 
 		public MainMenu() {
-			
 			final Level tutorial = LevelManager.getLevel(0);
 			final Level one = LevelManager.getLevel(1);
 			final Level two = LevelManager.getLevel(2);
 			final Level three = LevelManager.getLevel(3);
+
+			addKeyListener(kl);
 			
 			ActionListener al = new ActionListener() {
 
 				public void actionPerformed(ActionEvent event) {
 					JButton button = (JButton) event.getSource();
 					if (button == buttonT) {
-						if(tutorial == null){
+						if (tutorial == null) {
 							System.out.println("[ERROR] Unable to load level.");
 							return;
 						}
-						setContentPane(tutorial);
+						try {
+							stopMusicFile();
+							playMusicFile("NonBoss.wav", true);
+						} catch (LineUnavailableException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (UnsupportedAudioFileException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						tales.setContentPane(tutorial);
 						tales.validate();
 					} else if (button == back) {
 						tales.setContentPane(panel);
@@ -343,31 +360,72 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 						tales.setContentPane(panel5);
 						tales.validate();
 					} else if (button == button2) {
-						if(one == null){
-							JOptionPane.showMessageDialog(panel, "Unable to load level!");
+						if (one == null) {
+							JOptionPane.showMessageDialog(panel,
+									"Unable to load level!");
 							System.out.println("[ERROR] Unable to load level.");
 							return;
 						}
-						setContentPane(one);
+						one.addKeyListener(kl);
+						tales.remove(menu);
+						tales.setContentPane(one);
 						tales.validate();
+						try {
+							stopMusicFile();
+							playMusicFile("NonBoss.wav", true);
+						} catch (LineUnavailableException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (UnsupportedAudioFileException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					} else if (button == button3) {
-						if(two == null){
-							JOptionPane.showMessageDialog(panel, "Unable to load level!");
-
+						if (two == null) {
+							JOptionPane.showMessageDialog(panel,
+									"Unable to load level!");
 							System.out.println("[ERROR] Unable to load level.");
 							return;
 						}
-						setContentPane(two);
+						two.addKeyListener(kl);
+						tales.setContentPane(two);
 						tales.validate();
+						try {
+							stopMusicFile();
+							playMusicFile("NonBoss.wav", true);
+						} catch (LineUnavailableException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (UnsupportedAudioFileException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					} else {
-						if(three == null){
-							JOptionPane.showMessageDialog(panel, "Unable to load level!");
-
+						if (three == null) {
+							JOptionPane.showMessageDialog(panel,
+									"Unable to load level!");
 							System.out.println("[ERROR] Unable to load level.");
 							return;
 						}
-						setContentPane(three);
+						three.addKeyListener(kl);
+						tales.setContentPane(three);
 						tales.validate();
+						try {
+							stopMusicFile();
+							playMusicFile("NonBoss.wav", true);
+						} catch (LineUnavailableException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (UnsupportedAudioFileException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			};
@@ -441,7 +499,7 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 			if (line.indexOf("Player Name:") != -1) {
 				String name = getFileValue(line);
 				p = new Player(name);
-			}else{
+			} else {
 				p = new Player("John");
 			}
 		}
@@ -458,8 +516,10 @@ g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
 	static DungeonTales tales;
 
 	public static void registerLevels() {
-		Rectangle[] onePlats = {new Rectangle(10, 10, 30, 30)};
-		Level one = new Level(1, 20, 20, 50, 50, p, onePlats);
+		Rectangle[] onePlats = { new Rectangle(10, SCREEN_HEIGHT / 2, 500, 30) };
+		Level one = new Level(1, 700, SCREEN_HEIGHT - GROUND_WIDTH - 150, 10,
+				SCREEN_HEIGHT - GROUND_WIDTH - 150, p, onePlats);
+		one.addKeyListener(kl);
 	}
 
 }

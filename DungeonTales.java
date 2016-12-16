@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -21,7 +20,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -87,6 +85,7 @@ public class DungeonTales extends JFrame {
 	static Image door;
 	static Image knight;
 	static Image pause;
+	static Image menuBack;
 
 	static class Level extends JPanel {
 
@@ -172,7 +171,7 @@ public class DungeonTales extends JFrame {
 	}
 
 	static class LevelManager {
-		public static Level[] levels = new Level[1];
+		public static Level[] levels = new Level[3];
 
 		public static Level getLevel(int level) {
 			for (Level l : levels) {
@@ -196,12 +195,12 @@ public class DungeonTales extends JFrame {
 		setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		setResizable(false);
 		setTitle("| Dungeon Tales |");
-
-
+		
 		try {
 			playMusicFile("MenuMusic.wav", true);
 			door = ImageIO.read(new File("Door.png"));
 			knight = ImageIO.read(new File("Knight.png"));
+			menuBack = ImageIO.read(new File("menuBack.jpg"));
 		} catch (IOException e) {
 		} catch (LineUnavailableException e) {
 		} catch (UnsupportedAudioFileException e) {
@@ -209,8 +208,10 @@ public class DungeonTales extends JFrame {
 
 		// Set the menu pane.
 		menu = new MainMenu();
+		pausePanel = new PausePanel();
 		add(menu);
 
+		
 		addKeyListener(kl);
 		this.requestFocusInWindow();
 		this.setFocusable(true);
@@ -290,6 +291,11 @@ public class DungeonTales extends JFrame {
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
 		
+			if(key == KeyEvent.VK_ESCAPE){
+				tales.setContentPane(pausePanel);
+				tales.validate();
+			}
+			
 			if (p.getX() > SCREEN_WIDTH - 140) {
 				p.setX(p.getX() - 5);
 			}
@@ -306,9 +312,22 @@ public class DungeonTales extends JFrame {
 
 		}
 	};
+	
+	static PausePanel pausePanel;
 
+	// Pause panel
+	class PausePanel extends JPanel {
+		
+		public PausePanel(){
+			setForeground(new Color(0, 0, 64));
+		}
+		
+	}
+	
 	// Main menu panel
 	class MainMenu extends JPanel {
+		
+		
 
 		JButton buttonT = new JButton("Tutorial");
 		JButton button2 = new JButton("Level 1");
@@ -321,7 +340,12 @@ public class DungeonTales extends JFrame {
 				panel5 = new JPanel();
 
 		JPanel panel = this;
-
+		protected void paintComponent(Graphics g) {
+			
+			g.drawImage(menuBack, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
+			
+		};
+		
 		public MainMenu() {
 			final Level tutorial = LevelManager.getLevel(0);
 			final Level one = LevelManager.getLevel(1);
@@ -333,6 +357,7 @@ public class DungeonTales extends JFrame {
 			ActionListener al = new ActionListener() {
 
 				public void actionPerformed(ActionEvent event) {
+					repaint();
 					JButton button = (JButton) event.getSource();
 					if (button == buttonT) {
 						if (tutorial == null) {

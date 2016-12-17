@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.border.Border;
 
 public class DungeonTales extends JFrame {
 
@@ -54,11 +53,11 @@ public class DungeonTales extends JFrame {
             return this.y;
         }
 
-        public boolean isPaused(){
+        public boolean isPaused() {
             return this.isPaused;
         }
 
-        public Level getCurrentLevel(){
+        public Level getCurrentLevel() {
             return this.currentLevel;
         }
 
@@ -82,7 +81,7 @@ public class DungeonTales extends JFrame {
             this.isVisible = visible;
         }
 
-        public void setPaused(boolean pause){
+        public void setPaused(boolean pause) {
             this.isPaused = pause;
         }
 
@@ -110,6 +109,7 @@ public class DungeonTales extends JFrame {
             g.setColor(new Color(93, 100, 112));
             g.fillRect(0, SCREEN_HEIGHT - GROUND_WIDTH, SCREEN_WIDTH,
                     SCREEN_HEIGHT);
+            g.drawImage(menuBack, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
             g.drawImage(door, getEndX(), getEndY(), 187, 187, null);
             if (p.isVisible()) {
                 g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
@@ -124,7 +124,6 @@ public class DungeonTales extends JFrame {
 
         public Level(int level, int spawnX, int spawnY, int endX, int endY,
                      Player p, Rectangle[] platforms) {
-            //	setLayout(new BorderLayout());
             this.level = level;
             this.spawnX = spawnX;
             this.spawnY = spawnY;
@@ -137,6 +136,22 @@ public class DungeonTales extends JFrame {
             this.platforms = platforms;
             this.isCompleted = false;
             LevelManager.levels[level - 1] = this;
+
+            if (level == 4) {
+                setLayout(null);
+                // Create the tutorial messages
+                JLabel moveTip = new JLabel("<html><b>TIP:</b><br>Use the arrow keys<br>to navigate the level!</html>");
+                moveTip.setBounds(getSpawnX() + 50, getSpawnY() - 160, 300, 100);
+                moveTip.setForeground(Color.white);
+                moveTip.setFont(new Font(moveTip.getFont().getName(), Font.ITALIC, 20));
+                add(moveTip);
+
+                JLabel doorTip = new JLabel("<html><b>TIP:</b><br>Reach these doors<br>to complete the level!</html>");
+                doorTip.setBounds(getEndX() + 50, getSpawnY() - 160, 300, 100);
+                doorTip.setForeground(Color.white);
+                doorTip.setFont(new Font(doorTip.getFont().getName(), Font.ITALIC, 20));
+                add(doorTip);
+            }
 
             ActionListener al = new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
@@ -179,12 +194,12 @@ public class DungeonTales extends JFrame {
     }
 
     static class LevelManager {
-        public static Level[] levels = new Level[3];
+        public static Level[] levels = new Level[4];
 
         public static Level getLevel(int level) {
             for (Level l : levels) {
                 if (l == null) {
-                    return null;
+                    continue;
                 }
                 if (l.getLevel() == level) {
                     return l;
@@ -299,17 +314,23 @@ public class DungeonTales extends JFrame {
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
 
-            if(key == KeyEvent.VK_ESCAPE){
-                if(menu.isVisible() || !p.canPause){
+            if (key == KeyEvent.VK_ESCAPE) {
+                if (menu.isVisible() || !p.canPause) {
                     return;
                 }
-                if(p.isPaused()){
+                if (p.isPaused()) {
                     // Already paused, unpause game.
                     tales.remove(pausePanel);
                     tales.setContentPane(p.getCurrentLevel());
                     tales.validate();
                     p.setPaused(false);
-                    try{
+                    if (p.getCurrentLevel().equals(LevelManager.getLevel(4))) {
+                        for(Component c : LevelManager.getLevel(4).getComponents()){
+                            c.setVisible(true);
+                        }
+                        LevelManager.getLevel(4).setLayout(null);
+                    }
+                    try {
                         stopMusicFile();
                         playMusicFile("NonBoss.wav", true);
                     } catch (IOException ee) {
@@ -318,9 +339,17 @@ public class DungeonTales extends JFrame {
                     }
                     return;
                 }
-                try{
+                try {
                     stopMusicFile();
                 } catch (LineUnavailableException ee) {
+                }
+                if (p.getCurrentLevel().equals(LevelManager.getLevel(4))) {
+                    Level tutorial = LevelManager.getLevel(4);
+
+                    for(Component c : tutorial.getComponents()){
+                        c.setVisible(false);
+                    }
+                    tutorial.setLayout(new FlowLayout());
                 }
                 p.setPaused(true);
                 tales.add(pausePanel);
@@ -328,7 +357,7 @@ public class DungeonTales extends JFrame {
                 tales.validate();
             }
 
-            if(p.isPaused()){
+            if (p.isPaused()) {
                 return;
             }
 
@@ -357,18 +386,22 @@ public class DungeonTales extends JFrame {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!(e.getSource() instanceof JButton)){
+                if (!(e.getSource() instanceof JButton)) {
                     return;
                 }
 
                 JButton button = (JButton) e.getSource();
 
-                if(button.getText().equalsIgnoreCase("Resume Game")){
+                button.setForeground(Color.white);
+
+                // TODO implement instructions.
+
+                if (button.getText().equalsIgnoreCase("Resume Game")) {
                     tales.remove(pausePanel);
                     tales.setContentPane(p.getCurrentLevel());
                     tales.validate();
                     p.setPaused(false);
-                    try{
+                    try {
                         stopMusicFile();
                         playMusicFile("NonBoss.wav", true);
                     } catch (IOException ee) {
@@ -376,11 +409,15 @@ public class DungeonTales extends JFrame {
                     } catch (UnsupportedAudioFileException ee) {
                     }
                     return;
-                }else if(button.getText().equalsIgnoreCase("Quit Game")){
-                    System.exit(0);
-                }else if(button.getText().equalsIgnoreCase("Return To Menu")){
+                } else if (button.getText().equalsIgnoreCase("Quit Game")) {
+                    int result = 0;
+                    int dialog = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Warning", result);
+                    if(dialog == JOptionPane.YES_OPTION) {
+                        System.exit(0);
+                    }
+                } else if (button.getText().equalsIgnoreCase("Return To Menu")) {
                     tales.remove(pausePanel);
-                    try{
+                    try {
                         stopMusicFile();
                         playMusicFile("MenuMusic.wav", true);
                     } catch (IOException ee) {
@@ -395,7 +432,7 @@ public class DungeonTales extends JFrame {
             }
         };
 
-        public PausePanel(){
+        public PausePanel() {
             GridBagLayout layout = new GridBagLayout();
             setLayout(layout);
             GridBagConstraints gc = layout.getConstraints(this);
@@ -405,7 +442,7 @@ public class DungeonTales extends JFrame {
             ImageIcon logo = new ImageIcon("Logo.png");
             JLabel label3 = new JLabel(logo);
             label3.setPreferredSize(new Dimension(1000, 800));
-            label3.setLocation(SCREEN_WIDTH/2 - 1000, SCREEN_HEIGHT/2);
+            label3.setLocation(SCREEN_WIDTH / 2 - 1000, SCREEN_HEIGHT / 2);
             gc.gridx = 0;
             gc.gridy = 0;
             gc.insets = new Insets(0, 0, 20, 0);
@@ -426,6 +463,7 @@ public class DungeonTales extends JFrame {
             resume.setForeground(Color.white);
             gc.gridy = 2;
             resume.addActionListener(listener);
+            resume.addMouseListener(ml);
             add(resume, gc);
 
             JButton instructions = new JButton("Instructions");
@@ -436,6 +474,7 @@ public class DungeonTales extends JFrame {
             instructions.setForeground(Color.white);
             gc.gridy = 3;
             instructions.addActionListener(listener);
+            instructions.addMouseListener(ml);
             add(instructions, gc);
 
             JButton menu = new JButton("Return To Menu");
@@ -445,6 +484,7 @@ public class DungeonTales extends JFrame {
             menu.setContentAreaFilled(false);
             menu.setForeground(Color.white);
             menu.addActionListener(listener);
+            menu.addMouseListener(ml);
             gc.gridy = 4;
             add(menu, gc);
 
@@ -455,6 +495,7 @@ public class DungeonTales extends JFrame {
             quit.setContentAreaFilled(false);
             quit.setForeground(Color.white);
             quit.addActionListener(listener);
+            quit.addMouseListener(ml);
             gc.gridy = 5;
             add(quit, gc);
 
@@ -462,9 +503,46 @@ public class DungeonTales extends JFrame {
 
     }
 
+   static MouseListener ml = new MouseListener() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            if (!(e.getSource() instanceof JButton)) {
+                return;
+            }
+
+            JButton button = (JButton) e.getSource();
+
+            button.setForeground(Color.green);
+
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            if (!(e.getSource() instanceof JButton)) {
+                return;
+            }
+
+            JButton button = (JButton) e.getSource();
+
+            button.setForeground(Color.white);
+
+        }
+    };
+
     // Main menu panel
     class MainMenu extends JPanel {
-
 
 
         JButton buttonT = new JButton("Tutorial");
@@ -478,14 +556,15 @@ public class DungeonTales extends JFrame {
                 panel5 = new JPanel();
 
         JPanel panel = this;
+
         protected void paintComponent(Graphics g) {
 
             g.drawImage(menuBack, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
 
-        };
+        }
 
         public MainMenu() {
-            final Level tutorial = LevelManager.getLevel(0);
+            final Level tutorial = LevelManager.getLevel(4);
             final Level one = LevelManager.getLevel(1);
             final Level two = LevelManager.getLevel(2);
             final Level three = LevelManager.getLevel(3);
@@ -496,6 +575,11 @@ public class DungeonTales extends JFrame {
 
                 public void actionPerformed(ActionEvent event) {
                     repaint();
+
+                    if (!(event.getSource() instanceof JButton)) {
+                        return;
+                    }
+
                     JButton button = (JButton) event.getSource();
                     if (button == buttonT) {
                         if (tutorial == null) {
@@ -514,10 +598,13 @@ public class DungeonTales extends JFrame {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+                        panel.setVisible(false);
+                        menu.setVisible(false);
+                        p.setPaused(false);
+                        p.canPause = true;
                         p.setCurrentLevel(tutorial);
                         tales.setContentPane(tutorial);
                         tales.validate();
-                        p.canPause = true;
                     } else if (button == back) {
                         panel.setVisible(false);
                         tales.setContentPane(panel);
@@ -537,7 +624,7 @@ public class DungeonTales extends JFrame {
                         panel.setVisible(false);
                         one.addKeyListener(kl);
                         menu.setVisible(false);
-                       // tales.remove(menu);
+                        // tales.remove(menu);
                         tales.setContentPane(one);
                         tales.validate();
                         try {
@@ -604,6 +691,12 @@ public class DungeonTales extends JFrame {
                         }
                         p.canPause = true;
                     }
+
+                    if (p.getCurrentLevel() != null) {
+                        p.setX(p.getCurrentLevel().getSpawnX());
+                        p.setY(p.getCurrentLevel().getSpawnY());
+                    }
+
                 }
             };
 
@@ -613,44 +706,6 @@ public class DungeonTales extends JFrame {
             Dimension dimB = new Dimension(200, 60);
 
             p.canPause = false;
-
-            MouseListener ml = new MouseListener() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                }
-
-                @Override
-                public void mousePressed(MouseEvent e) {
-                }
-
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    if(!(e.getSource() instanceof JButton)){
-                        return;
-                    }
-
-                    JButton button = (JButton) e.getSource();
-
-                    button.setForeground(Color.green);
-
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    if(!(e.getSource() instanceof JButton)){
-                        return;
-                    }
-
-                    JButton button = (JButton) e.getSource();
-
-                    button.setForeground(Color.white);
-
-                }
-            };
 
             back.setLocation(100, 100);
             back.setPreferredSize(dimB);
@@ -721,7 +776,7 @@ public class DungeonTales extends JFrame {
             ImageIcon logo = new ImageIcon("Logo.png");
             JLabel label3 = new JLabel(logo);
             label3.setPreferredSize(new Dimension(1000, 800));
-            label3.setLocation(SCREEN_WIDTH/2 - 1000, SCREEN_HEIGHT/2);
+            label3.setLocation(SCREEN_WIDTH / 2 - 1000, SCREEN_HEIGHT / 2);
             add(label3);
 
         }
@@ -763,7 +818,13 @@ public class DungeonTales extends JFrame {
     static DungeonTales tales;
 
     public static void registerLevels() {
-        Rectangle[] onePlats = { new Rectangle(10, SCREEN_HEIGHT / 2, 500, 30) };
+
+        Rectangle[] tutorialPlats = {new Rectangle(10, SCREEN_HEIGHT / 2, 500, 30)};
+
+        Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 50, SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p, tutorialPlats);
+        tutorial.addKeyListener(kl);
+
+        Rectangle[] onePlats = {new Rectangle(10, SCREEN_HEIGHT / 2, 500, 30)};
         Level one = new Level(1, 700, SCREEN_HEIGHT - GROUND_WIDTH - 150, 10,
                 SCREEN_HEIGHT - GROUND_WIDTH - 150, p, onePlats);
         one.addKeyListener(kl);

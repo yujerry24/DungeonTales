@@ -401,52 +401,61 @@ public class DungeonTales extends JFrame {
             GridBagConstraints gc = layout.getConstraints(this);
             setBackground(new Color(0, 0, 0, 195));
             setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-            JLabel title = new JLabel("Paused Game");
-            title.setFont(new Font(title.getFont().getName(), Font.BOLD, 60));
-            title.setForeground(Color.red);
+
+            ImageIcon logo = new ImageIcon("Logo.png");
+            JLabel label3 = new JLabel(logo);
+            label3.setPreferredSize(new Dimension(1000, 800));
+            label3.setLocation(SCREEN_WIDTH/2 - 1000, SCREEN_HEIGHT/2);
             gc.gridx = 0;
             gc.gridy = 0;
             gc.insets = new Insets(0, 0, 20, 0);
+            add(label3, gc);
+
+            JLabel title = new JLabel("Paused Game");
+            title.setFont(new Font(title.getFont().getName(), Font.BOLD, 42));
+            title.setForeground(Color.white);
+            gc.gridx = 0;
+            gc.gridy = 1;
             add(title, gc);
 
             JButton resume = new JButton("Resume Game");
-            resume.setFont(new Font(resume.getFont().getName(), Font.PLAIN, title.getFont().getSize()/2));
+            resume.setFont(new Font(resume.getFont().getName(), Font.PLAIN, title.getFont().getSize() - 18));
             resume.setBorderPainted(false);
             resume.setFocusable(false);
             resume.setContentAreaFilled(false);
             resume.setForeground(Color.white);
-            gc.gridy = 1;
+            gc.gridy = 2;
             resume.addActionListener(listener);
             add(resume, gc);
 
             JButton instructions = new JButton("Instructions");
-            instructions.setFont(new Font(instructions.getFont().getName(), Font.PLAIN, title.getFont().getSize()/2));
+            instructions.setFont(new Font(instructions.getFont().getName(), Font.PLAIN, title.getFont().getSize() - 18));
             instructions.setBorderPainted(false);
             instructions.setFocusable(false);
             instructions.setContentAreaFilled(false);
             instructions.setForeground(Color.white);
-            gc.gridy = 2;
+            gc.gridy = 3;
             instructions.addActionListener(listener);
             add(instructions, gc);
 
             JButton menu = new JButton("Return To Menu");
-            menu.setFont(new Font(menu.getFont().getName(), Font.PLAIN, title.getFont().getSize()/2));
+            menu.setFont(new Font(menu.getFont().getName(), Font.PLAIN, title.getFont().getSize() - 18));
             menu.setBorderPainted(false);
             menu.setFocusable(false);
             menu.setContentAreaFilled(false);
             menu.setForeground(Color.white);
             menu.addActionListener(listener);
-            gc.gridy = 3;
+            gc.gridy = 4;
             add(menu, gc);
 
             JButton quit = new JButton("Quit Game");
-            quit.setFont(new Font(quit.getFont().getName(), Font.PLAIN, title.getFont().getSize()/2));
+            quit.setFont(new Font(quit.getFont().getName(), Font.PLAIN, title.getFont().getSize() - 18));
             quit.setBorderPainted(false);
             quit.setFocusable(false);
             quit.setContentAreaFilled(false);
             quit.setForeground(Color.white);
             quit.addActionListener(listener);
-            gc.gridy = 4;
+            gc.gridy = 5;
             add(quit, gc);
 
         }

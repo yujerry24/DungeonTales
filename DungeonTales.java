@@ -616,7 +616,7 @@ public class DungeonTales extends JFrame {
                     } else if (button == button2) {
                         if (one == null) {
                             JOptionPane.showMessageDialog(panel,
-                                    "Unable to load level!");
+                                    "Unable to load level!\n Has it been created?", "Error", 0);
                             System.out.println("[ERROR] Unable to load level.");
                             return;
                         }
@@ -643,7 +643,7 @@ public class DungeonTales extends JFrame {
                     } else if (button == button3) {
                         if (two == null) {
                             JOptionPane.showMessageDialog(panel,
-                                    "Unable to load level!");
+                                    "Unable to load level!\n Has it been created?", "Error", 0);
                             System.out.println("[ERROR] Unable to load level.");
                             return;
                         }
@@ -668,7 +668,7 @@ public class DungeonTales extends JFrame {
                     } else {
                         if (three == null) {
                             JOptionPane.showMessageDialog(panel,
-                                    "Unable to load level!");
+                                    "Unable to load level!\n Has it been created?", "Error", 0);
                             System.out.println("[ERROR] Unable to load level.");
                             return;
                         }

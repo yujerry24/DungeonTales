@@ -31,6 +31,7 @@ public class DungeonTales extends JFrame {
         private Level currentLevel;
         private boolean isVisible;
         private boolean isPaused;
+        private boolean canPause;
 
         public Player(String name) {
             x = 0;
@@ -38,6 +39,7 @@ public class DungeonTales extends JFrame {
             this.name = name;
             this.isVisible = false;
             this.isPaused = false;
+            this.canPause = false;
         }
 
         public String getName() {
@@ -298,7 +300,7 @@ public class DungeonTales extends JFrame {
             int key = e.getKeyCode();
 
             if(key == KeyEvent.VK_ESCAPE){
-                if(menu.isVisible()){
+                if(menu.isVisible() || !p.canPause){
                     return;
                 }
                 if(p.isPaused()){
@@ -317,7 +319,7 @@ public class DungeonTales extends JFrame {
                     return;
                 }
                 try{
-                stopMusicFile();
+                    stopMusicFile();
                 } catch (LineUnavailableException ee) {
                 }
                 p.setPaused(true);
@@ -358,9 +360,9 @@ public class DungeonTales extends JFrame {
                 if(!(e.getSource() instanceof JButton)){
                     return;
                 }
-                
+
                 JButton button = (JButton) e.getSource();
-                
+
                 if(button.getText().equalsIgnoreCase("Resume Game")){
                     tales.remove(pausePanel);
                     tales.setContentPane(p.getCurrentLevel());
@@ -376,8 +378,20 @@ public class DungeonTales extends JFrame {
                     return;
                 }else if(button.getText().equalsIgnoreCase("Quit Game")){
                     System.exit(0);
+                }else if(button.getText().equalsIgnoreCase("Return To Menu")){
+                    tales.remove(pausePanel);
+                    try{
+                        stopMusicFile();
+                        playMusicFile("MenuMusic.wav", true);
+                    } catch (IOException ee) {
+                    } catch (LineUnavailableException ee) {
+                    } catch (UnsupportedAudioFileException ee) {
+                    }
+                    p.setPaused(false);
+                    tales.setContentPane(new MainMenu());
+                    tales.validate();
                 }
-                
+
             }
         };
 
@@ -424,7 +438,7 @@ public class DungeonTales extends JFrame {
             menu.addActionListener(listener);
             gc.gridy = 3;
             add(menu, gc);
-            
+
             JButton quit = new JButton("Quit Game");
             quit.setFont(new Font(quit.getFont().getName(), Font.PLAIN, title.getFont().getSize()/2));
             quit.setBorderPainted(false);
@@ -494,6 +508,7 @@ public class DungeonTales extends JFrame {
                         p.setCurrentLevel(tutorial);
                         tales.setContentPane(tutorial);
                         tales.validate();
+                        p.canPause = true;
                     } else if (button == back) {
                         panel.setVisible(false);
                         tales.setContentPane(panel);
@@ -512,7 +527,8 @@ public class DungeonTales extends JFrame {
                         p.setCurrentLevel(one);
                         panel.setVisible(false);
                         one.addKeyListener(kl);
-                        tales.remove(menu);
+                        menu.setVisible(false);
+                       // tales.remove(menu);
                         tales.setContentPane(one);
                         tales.validate();
                         try {
@@ -527,6 +543,7 @@ public class DungeonTales extends JFrame {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+                        p.canPause = true;
                     } else if (button == button3) {
                         if (two == null) {
                             JOptionPane.showMessageDialog(panel,
@@ -539,6 +556,7 @@ public class DungeonTales extends JFrame {
                         two.addKeyListener(kl);
                         tales.setContentPane(two);
                         tales.validate();
+                        p.canPause = true;
                         try {
                             stopMusicFile();
                             playMusicFile("NonBoss.wav", true);
@@ -575,6 +593,7 @@ public class DungeonTales extends JFrame {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+                        p.canPause = true;
                     }
                 }
             };
@@ -583,6 +602,8 @@ public class DungeonTales extends JFrame {
             this.setLayout(flow);
 
             Dimension dimB = new Dimension(200, 60);
+
+            p.canPause = false;
 
             MouseListener ml = new MouseListener() {
                 @Override

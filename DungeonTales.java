@@ -824,11 +824,6 @@ public class DungeonTales extends JFrame {
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 50, SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p, tutorialPlats);
         tutorial.addKeyListener(kl);
 
-        Rectangle[] onePlats = {new Rectangle(10, SCREEN_HEIGHT / 2, 500, 30)};
-        Level one = new Level(1, 700, SCREEN_HEIGHT - GROUND_WIDTH - 150, 10,
-                SCREEN_HEIGHT - GROUND_WIDTH - 150, p, onePlats);
-        one.addKeyListener(kl);
-
          Rectangle[] onePlats = {new Rectangle(0, 300, SCREEN_WIDTH - 200, 30)
        , new Rectangle(200, 700, SCREEN_WIDTH, 30)};
       Level one = new Level(1, 20, 20, 50, 50, p, onePlats);

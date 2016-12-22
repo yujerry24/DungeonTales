@@ -548,13 +548,18 @@ public class DungeonTales extends JFrame {
                     if (r == null) {
                         return;
                     }
-                    if (r.contains(p.getX() + 115, r.getY()) && key == KeyEvent.VK_RIGHT) {
-                        if(key == KeyEvent.VK_RIGHT) {
-                            p.setX(p.getX() - 7);
+
+
+                        if (r.contains(p.getX() + 115, r.getY()) && key == KeyEvent.VK_RIGHT && p.getY() != r.getY() - 120
+                                && !(p.getX() >= r.getMinX())
+                                && !(p.getX() <= r.getWidth() - 150 / 2 + 5)) {
+                                p.setX(p.getX() - 7);
+                        } else if (r.contains(p.getX() + 30, r.getY()) && key == KeyEvent.VK_LEFT && p.getY() != r.getY() - 120
+                                && !(p.getX() >= r.getMinX())
+                                && !(p.getX() <= r.getWidth() - 150 / 2 + 5)) {
+                            p.setX(p.getX() + 7);
                         }
-                    }else if(r.contains(p.getX() + 30, r.getY()) && key == KeyEvent.VK_LEFT){
-                        p.setX(p.getX() + 7);
-                    }
+
 
                 }
             }

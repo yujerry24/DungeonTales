@@ -160,6 +160,7 @@ public class DungeonTales extends JFrame {
         private int spawnX, spawnY, endX, endY;
         private boolean isCompleted;
         private Player p;
+        private Rectangle[] spikes;
         private Rectangle[] platforms;
         private Platform[] movingPlats;
 
@@ -193,7 +194,7 @@ public class DungeonTales extends JFrame {
         }
 
         public Level(int level, int spawnX, int spawnY, int endX, int endY,
-                     Player p, Rectangle[] platforms, int movingPlats) {
+                     Player p, Rectangle[] platforms, Rectangle [] spikes, int movingPlats) {
             this.level = level;
             this.spawnX = spawnX;
             this.spawnY = spawnY;
@@ -206,6 +207,7 @@ public class DungeonTales extends JFrame {
             this.platforms = platforms;
             this.isCompleted = false;
             this.movingPlats = new Platform[movingPlats];
+            this.spikes=spikes;
             LevelManager.levels[level - 1] = this;
 
             if (level == 4) {
@@ -311,6 +313,10 @@ public class DungeonTales extends JFrame {
         public void addPlatform(int id, Platform form) {
             this.movingPlats[id - 1] = form;
         }
+         public Rectangle[] getSpikes() {
+          return this.spikes;
+        }
+        
 
     }
 
@@ -992,16 +998,16 @@ public class DungeonTales extends JFrame {
 
         Rectangle[] tutorialPlats = { new Rectangle(10, SCREEN_HEIGHT / 2, 500,
                 30) };
-
+        Rectangle[] spikesOne = {new Rectangle(100,200)};
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 50,
                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
-                tutorialPlats, 1);
+                tutorialPlats, spikesOne, 1);
         tutorial.addKeyListener(kl);
 
         Rectangle[] onePlats = { new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
                 new Rectangle(200, 700, SCREEN_WIDTH, 30) };
-        Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 1);
-
+        Level one = new Level(1, 20, 20, 50, 50, p, onePlats, spikesOne, 1);
+         
         Platform onePlat = new Platform(800, 400, SCREEN_WIDTH, 400, 200, 30, one, 1, 2);
 
     }

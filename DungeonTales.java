@@ -560,7 +560,14 @@ public class DungeonTales extends JFrame {
 			}
 			if (key == KeyEvent.VK_LEFT) {
 				for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-					if (p.getX() >= r.getMinX() && p.getX() <= r.getWidth()) {
+					
+					if(r == null){
+						return;
+					}
+					
+					if (p.getX() >= r.getMinX() - 115 && !(p.getY() == r.getY() - 120)
+							&& !(p.getX() >= r.getMinX())
+							&& !(p.getX() <= r.getWidth() - 150 / 2 + 5)) {
 						return;
 					}
 				}

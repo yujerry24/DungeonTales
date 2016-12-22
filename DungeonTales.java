@@ -999,6 +999,7 @@ public class DungeonTales extends JFrame {
         Rectangle[] tutorialPlats = { new Rectangle(10, SCREEN_HEIGHT / 2, 500,
                 30) };
         Rectangle[] spikesOne = {new Rectangle(100,200)};
+        Rectangle[] spikesTwo = {new Rectangle(100,200)};
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 50,
                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
                 tutorialPlats, spikesOne, 1);
@@ -1006,9 +1007,14 @@ public class DungeonTales extends JFrame {
 
         Rectangle[] onePlats = { new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
                 new Rectangle(200, 700, SCREEN_WIDTH, 30) };
+        
+        Rectangle[] twoPlats = { new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
+                new Rectangle(200, 700, SCREEN_WIDTH, 30) };
         Level one = new Level(1, 20, 20, 50, 50, p, onePlats, spikesOne, 1);
+        Level two = new Level(2, 20, 20, 1600, 875, p, twoPlats, spikesTwo, 2);
          
         Platform onePlat = new Platform(800, 400, SCREEN_WIDTH, 400, 200, 30, one, 1, 2);
+        Platform twoPlat = new Platform(800, 400, SCREEN_WIDTH, 400, 200, 30, one, 1, 2);
 
     }
 }

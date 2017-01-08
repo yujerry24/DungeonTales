@@ -1178,7 +1178,7 @@ public class DungeonTales extends JFrame {
 
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
-                tutorialPlats, 2, spikesOne);
+                tutorialPlats, 1, spikesOne);
         tutorial.addKeyListener(kl);
         Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial, 1, 2);
 

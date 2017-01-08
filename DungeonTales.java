@@ -164,6 +164,7 @@ public class DungeonTales extends JFrame {
     static Image knight3;
     static Image pause;
     static Image menuBack;
+    static Image spikeImage;
 
     static class Level extends JPanel {
 
@@ -173,7 +174,7 @@ public class DungeonTales extends JFrame {
         private Player p;
         private Rectangle[] platforms;
         private Platform[] movingPlats;
-        private Rectangle[] spikes;
+        private Rectangle[] spikes ;
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -206,6 +207,10 @@ public class DungeonTales extends JFrame {
                 }
 
                 g.fillRect(p.getX(), p.getY(), p.width, p.height);
+            }
+             for (Rectangle s : getSpikes()) {
+                g.drawImage(spikeImage, (int) s.getBounds().getMinX(), (int) s.getBounds()
+                        .getMinY(), (int) s.getWidth(), (int) s.getHeight(),null);
             }
         }
 
@@ -398,6 +403,7 @@ public class DungeonTales extends JFrame {
             knight2 = ImageIO.read(new File("Knight2.png"));
             knight3 = ImageIO.read(new File("Knight.png"));
             menuBack = ImageIO.read(new File("menuBack.jpg"));
+            spikeImage = ImageIO.read(new File("spikes.png"));
         } catch (IOException e) {
         } catch (LineUnavailableException e) {
         } catch (UnsupportedAudioFileException e) {
@@ -1124,10 +1130,11 @@ public class DungeonTales extends JFrame {
       
       Rectangle[] tutorialPlats = {new Rectangle(800, SCREEN_HEIGHT - 300,
                                                  180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
-      
+      Rectangle[] spikesOne = {new Rectangle(400,225,500,75)};
+        Rectangle[] spikesTwo = {new Rectangle(100,200)};
       Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
                                  SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
-                                 tutorialPlats, 2, null);
+                                 tutorialPlats, 2, spikesOne);
       tutorial.addKeyListener(kl);
       Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial, 1, 2);
       
@@ -1138,7 +1145,7 @@ public class DungeonTales extends JFrame {
       
       Rectangle[] oneSpikes = {new Rectangle (700, 240, 30, 60)};
       
-      Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 0, oneSpikes);
+      Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 0, spikesOne);
       
     }
 }

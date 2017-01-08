@@ -109,6 +109,7 @@ public class DungeonTales extends JFrame {
         private int id;
         private int speed;
         private boolean back;
+        private boolean hasPlayer = false;
 
         public Platform(int startX, int startY, int endX, int endY, int width,
                         int height, Level level, int id, int speed) {
@@ -146,6 +147,14 @@ public class DungeonTales extends JFrame {
             return this.speed;
         }
 
+        public boolean hasPlayer(){
+            return this.hasPlayer;
+        }
+
+        public void hasPlayer(boolean yes){
+            this.hasPlayer = yes;
+        }
+
         public boolean getBack() {
             return this.back;
         }
@@ -165,6 +174,9 @@ public class DungeonTales extends JFrame {
     static Image pause;
     static Image menuBack;
     static Image spikeImage;
+
+    static int PLAYER_WIDTH = 150;
+    static int PLAYER_HEIGHT = 125;
 
     static class Level extends JPanel {
 
@@ -196,6 +208,11 @@ public class DungeonTales extends JFrame {
                         .getMinY(), (int) r.getWidth(), (int) r.getHeight());
             }
 
+            for (Rectangle s : getSpikes()) {
+                g.drawImage(spikeImage, (int) s.getBounds().getMinX(), (int) s.getBounds()
+                        .getMinY(), (int) s.getWidth(), (int) s.getHeight(),null);
+            }
+
             if (p.isVisible()) {
                 g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
             }
@@ -208,10 +225,7 @@ public class DungeonTales extends JFrame {
 
                 g.fillRect(p.getX(), p.getY(), p.width, p.height);
             }
-             for (Rectangle s : getSpikes()) {
-                g.drawImage(spikeImage, (int) s.getBounds().getMinX(), (int) s.getBounds()
-                        .getMinY(), (int) s.getWidth(), (int) s.getHeight(),null);
-            }
+
         }
 
         public Level(int level, int spawnX, int spawnY, int endX, int endY,
@@ -303,7 +317,7 @@ public class DungeonTales extends JFrame {
                         }
 
 
-                        if (pl.onPlat) {
+                        if (p.hasPlayer()) {
                             if (p.startX != p.endX) {
                                 if (p.getBack()) {
                                     pl.setX(pl.getX() - p.getSpeed());
@@ -316,7 +330,7 @@ public class DungeonTales extends JFrame {
                                     pl.setY(pl.getY() - p.getSpeed());
                                 } else {
                                     pl.setY(pl.getY() + p.getSpeed());
-                                    doGravity = false;
+                                 //   doGravity = false;
                                 }
                             }
                         }
@@ -429,26 +443,26 @@ public class DungeonTales extends JFrame {
                     return;
                 }
 
-                    if (pressed[0] == 0) {
-                        return;
-                    }
+                if (pressed[0] == 0) {
+                    return;
+                }
 
-                    int key = pressed[0];
+                int key = pressed[0];
 
-                    if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT) {
-                        if (p.getX() > SCREEN_WIDTH - 140) {
-                            p.setX(p.getX() - 5);
-                        }
-                        if (p.getX() < 10) {
-                            p.setX(p.getX() + 5);
-                        }
-                    }
-
-                    if (pressed[0] == KeyEvent.VK_LEFT) {
+                if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT) {
+                    if (p.getX() > SCREEN_WIDTH - 140) {
                         p.setX(p.getX() - 5);
-                    } else if (pressed[0] == KeyEvent.VK_RIGHT) {
+                    }
+                    if (p.getX() < 10) {
                         p.setX(p.getX() + 5);
                     }
+                }
+
+                if (pressed[0] == KeyEvent.VK_LEFT) {
+                    p.setX(p.getX() - 5);
+                } else if (pressed[0] == KeyEvent.VK_RIGHT) {
+                    p.setX(p.getX() + 5);
+                }
 
             }
         });
@@ -460,6 +474,34 @@ public class DungeonTales extends JFrame {
 
                     if (p.getCurrentLevel() == null) {
                         return;
+                    }
+
+                    // Create a rectangle at the player.
+                    Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY() + PLAYER_HEIGHT - 5, 1, 1);
+
+                    // Test code to draw the location of rectangle.
+                    // p.getCurrentLevel().getGraphics().drawRect( (int) player.getMaxX(), (int) player.getMaxY(), 1, 1);
+
+                    // Loop through all the platforms on the level, and compare their locations with the player.
+                    for(Rectangle plat : p.getCurrentLevel().getPlatforms()){
+                        if(plat.intersects(player)){
+                            // Player is ontop of a platform, so gravity is not applied.
+                            return;
+                        }
+                    }
+
+                    // moving platform collision
+                    for(Platform plat : p.getCurrentLevel().getMovingPlats()){
+                        Rectangle r = new Rectangle(plat.getX(), plat.getY(), plat.width, plat.height);
+                       // p.getCurrentLevel().getGraphics().drawRect((int) r.getX(), (int) r.getY(), 1, 1);
+                        if(r.intersects(player)){
+                            plat.hasPlayer(true);
+                            return;
+                        }else{
+                            if(plat.hasPlayer()){
+                                plat.hasPlayer(false);
+                            }
+                        }
                     }
 
                     if (p.getY() < SCREEN_HEIGHT - GROUND_WIDTH - 125) {
@@ -549,11 +591,11 @@ public class DungeonTales extends JFrame {
             }
 
             if (key == KeyEvent.VK_LEFT) {
-              pressed[0] = 0;
-              movement.stop();
+                pressed[0] = 0;
+                movement.stop();
             } else if (key == KeyEvent.VK_RIGHT) {
-              pressed[0] = 0;
-              movement.stop();
+                pressed[0] = 0;
+                movement.stop();
             }
         }
 
@@ -620,16 +662,16 @@ public class DungeonTales extends JFrame {
             }
 
             if (pressed[0] == 0) {
-              if (key == KeyEvent.VK_RIGHT) { 
-                pressed[0] = KeyEvent.VK_RIGHT;
-                movement.start();
-                knight = knight3;
-              }
-              if (key == KeyEvent.VK_LEFT) {               
-                pressed[0] = KeyEvent.VK_LEFT;
-                movement.start();
-                knight= knight2;
-              }
+                if (key == KeyEvent.VK_RIGHT) {
+                    pressed[0] = KeyEvent.VK_RIGHT;
+                    movement.start();
+                    knight = knight3;
+                }
+                if (key == KeyEvent.VK_LEFT) {
+                    pressed[0] = KeyEvent.VK_LEFT;
+                    movement.start();
+                    knight= knight2;
+                }
             }
 
             if (key == KeyEvent.VK_SPACE) {
@@ -1126,33 +1168,33 @@ public class DungeonTales extends JFrame {
 
     public static void registerLevels() {
 
-      //Tutorial  
-      
-      Rectangle[] tutorialPlats = {new Rectangle(800, SCREEN_HEIGHT - 300,
-                                                 180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
-      
-      Rectangle[] spikesOne = {new Rectangle(400,225,500,75), new Rectangle(SCREEN_WIDTH - 200, 600, 180, 100)};
-      Rectangle[] spikesTwo = {new Rectangle(100,200)};
-      
+        //Tutorial
+
+        Rectangle[] tutorialPlats = {new Rectangle(800, SCREEN_HEIGHT - 300,
+                180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
+
+        Rectangle[] spikesOne = {new Rectangle(400,225,500,75), new Rectangle(SCREEN_WIDTH - 200, 600, 180, 100)};
+        Rectangle[] spikesTwo = {new Rectangle(100,200)};
+
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
-                                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
-                                 tutorialPlats, 2, spikesOne);
-      tutorial.addKeyListener(kl);
-      Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial, 1, 2);
-      
-      //Level 1
-      
-      Rectangle[] onePlats = {new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
-        new Rectangle(200, 700, SCREEN_WIDTH, 30)};
-      
-      //Rectangle[] oneSpikes = {new Rectangle (700, 240, 30, 60)};
-      
-      Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 3, spikesOne);
-      
-     tutorial.addKeyListener(kl);
-     //Platform lPlat1 = new Platform(1050, 30, 1050, 330, 90, 30, one, 1, 2);
-     Platform lPlat2 = new Platform(SCREEN_WIDTH - 150, 100, SCREEN_WIDTH - 150, 600, 90, 30, one, 1, 2);
-     Platform lPlat3 = new Platform(350, 175, 950, 175, 90, 30, one, 2, 4);
-     Platform lPlat4 = new Platform(900, 780, 900, 1000, 90, 30, one, 3, 2);
+                SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
+                tutorialPlats, 2, spikesOne);
+        tutorial.addKeyListener(kl);
+        Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial, 1, 2);
+
+        //Level 1
+
+        Rectangle[] onePlats = {new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
+                new Rectangle(200, 700, SCREEN_WIDTH, 30)};
+
+        //Rectangle[] oneSpikes = {new Rectangle (700, 240, 30, 60)};
+
+        Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 3, spikesOne);
+
+        tutorial.addKeyListener(kl);
+        //Platform lPlat1 = new Platform(1050, 30, 1050, 330, 90, 30, one, 1, 2);
+        Platform lPlat2 = new Platform(SCREEN_WIDTH - 150, 100, SCREEN_WIDTH - 150, 600, 90, 30, one, 1, 2);
+        Platform lPlat3 = new Platform(350, 175, 950, 175, 90, 30, one, 2, 4);
+        Platform lPlat4 = new Platform(900, 780, 900, 1000, 90, 30, one, 3, 2);
     }
 }

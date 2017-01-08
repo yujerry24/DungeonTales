@@ -160,6 +160,8 @@ public class DungeonTales extends JFrame {
 
     static Image door;
     static Image knight;
+    static Image knight2;
+    static Image knight3;
     static Image pause;
     static Image menuBack;
 
@@ -393,6 +395,8 @@ public class DungeonTales extends JFrame {
             playMusicFile("MenuMusic.wav", true);
             door = ImageIO.read(new File("Door.png"));
             knight = ImageIO.read(new File("Knight.png"));
+            knight2 = ImageIO.read(new File("Knight2.png"));
+            knight3 = ImageIO.read(new File("Knight.png"));
             menuBack = ImageIO.read(new File("menuBack.jpg"));
         } catch (IOException e) {
         } catch (LineUnavailableException e) {
@@ -539,11 +543,11 @@ public class DungeonTales extends JFrame {
             }
 
             if (key == KeyEvent.VK_LEFT) {
-                pressed[0] = 0;
-                movement.stop();
+              pressed[0] = 0;
+              movement.stop();
             } else if (key == KeyEvent.VK_RIGHT) {
-                pressed[0] = 0;
-                movement.stop();
+              pressed[0] = 0;
+              movement.stop();
             }
         }
 
@@ -610,14 +614,16 @@ public class DungeonTales extends JFrame {
             }
 
             if (pressed[0] == 0) {
-                if (key == KeyEvent.VK_RIGHT) {
-                    pressed[0] = KeyEvent.VK_RIGHT;
-                    movement.start();
-                }
-                if (key == KeyEvent.VK_LEFT) {
-                    pressed[0] = KeyEvent.VK_LEFT;
-                    movement.start();
-                }
+              if (key == KeyEvent.VK_RIGHT) { 
+                pressed[0] = KeyEvent.VK_RIGHT;
+                movement.start();
+                knight = knight3;
+              }
+              if (key == KeyEvent.VK_LEFT) {               
+                pressed[0] = KeyEvent.VK_LEFT;
+                movement.start();
+                knight= knight2;
+              }
             }
 
             if (key == KeyEvent.VK_SPACE) {
@@ -1114,19 +1120,25 @@ public class DungeonTales extends JFrame {
 
     public static void registerLevels() {
 
-        Rectangle[] tutorialPlats = {new Rectangle(800, SCREEN_HEIGHT - 300,
-                180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
-
-        Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
-                SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
-                tutorialPlats, 2, null);
-        tutorial.addKeyListener(kl);
-        Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial, 1, 2);
-
-        Rectangle[] onePlats = {new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
-                new Rectangle(200, 700, SCREEN_WIDTH, 30)};
-        // Rectangle[] onePlats = {new Rectangle(0, 0, 10, 10)};
-        Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 0, null);
-
+      //Tutorial  
+      
+      Rectangle[] tutorialPlats = {new Rectangle(800, SCREEN_HEIGHT - 300,
+                                                 180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
+      
+      Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
+                                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
+                                 tutorialPlats, 2, null);
+      tutorial.addKeyListener(kl);
+      Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial, 1, 2);
+      
+      //Level 1
+      
+      Rectangle[] onePlats = {new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
+        new Rectangle(200, 700, SCREEN_WIDTH, 30)};
+      
+      Rectangle[] oneSpikes = {new Rectangle (700, 240, 30, 60)};
+      
+      Level one = new Level(1, 20, 20, 50, 50, p, onePlats, 0, oneSpikes);
+      
     }
 }

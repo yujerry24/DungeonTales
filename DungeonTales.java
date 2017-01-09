@@ -467,11 +467,14 @@ public class DungeonTales extends JFrame {
             }
         });
 
+        // Create a new loop to run gravity.
         Timer gravity = new Timer(5, new ActionListener() {
 
             public void actionPerformed(ActionEvent arg0) {
+                // If the boolean is true, allow gravity to be applied.
                 if (doGravity) {
 
+                    // Only apply gravity when the player is within a level which has loaded properly.
                     if (p.getCurrentLevel() == null) {
                         return;
                     }
@@ -490,26 +493,43 @@ public class DungeonTales extends JFrame {
                         }
                     }
 
-                    // moving platform collision
+                    // Moving platform collision
                     for(Platform plat : p.getCurrentLevel().getMovingPlats()){
+
+                        // Make sure that the platform is not null.
+                        if(plat == null){
+                            return;
+                        }
+
+                        // Create a rectangle out of the platform object.
                         Rectangle r = new Rectangle(plat.getX(), plat.getY(), plat.width, plat.height);
-                       // p.getCurrentLevel().getGraphics().drawRect((int) r.getX(), (int) r.getY(), 1, 1);
+
+                        // Check if the players rectangle is intersecting with a platform.
                         if(r.intersects(player)){
+                            // If they are intersecting, then add the player to that platform.
+                            // This is done for moving platforms to allow the player to stay on the platform as it moves.
                             plat.hasPlayer(true);
+                            // Return to stop gravity from applying.
                             return;
                         }else{
+                            // Else the player is no longer on a platform.
+                            // Check to see if the platform that we were checking had the player on top of it.
                             if(plat.hasPlayer()){
+                                // The player was on this platform, so remove the player from that platform.
                                 plat.hasPlayer(false);
                             }
                         }
                     }
 
+                    // Main gravity control. Sends player to the lowest possible point on the level (Assuming no platform is found)
                     if (p.getY() < SCREEN_HEIGHT - GROUND_WIDTH - 125) {
+                        // Make the player fall.
                         p.setY(p.getY() + 6);
                     }
                 }
             }
         });
+        // Start the gravity timer.
         gravity.start();
     }
 
@@ -518,19 +538,30 @@ public class DungeonTales extends JFrame {
     static boolean doGravity = true;
     static Timer movement;
 
+    /*
+    Method to play a music file.
+    @param The file of music you would like to play.
+    @param Boolean for whether or not you would like to loop it.
+    @returns Nothing, a void method.
+     */
     public static void playMusicFile(String file, boolean loop)
             throws IOException, LineUnavailableException,
             UnsupportedAudioFileException {
+        // Create a new file using the filename parameter.
         File sound = new File(file);
 
+        // Make sure the file exists.
         if (!sound.exists()) {
             System.out.println("[ERROR] Sound file not found.");
             return;
         }
 
+        // Play the audio file.
         AudioInputStream stream = AudioSystem.getAudioInputStream(sound);
         clip = AudioSystem.getClip();
+        // Open the audio stream.
         clip.open(stream);
+        // If loop boolean is true, then loop the sound file.
         if (loop) {
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } else {
@@ -539,44 +570,51 @@ public class DungeonTales extends JFrame {
 
     }
 
+    /*
+    Method to stop any music file currently playing.
+     */
     public static void stopMusicFile() throws LineUnavailableException {
+        // If no music is being played, return.
         if (clip == null) {
             return;
         }
+        // Stop the music, and close the clip.
         clip.stop();
         clip.close();
     }
 
+    /*
+    Method used to easily obtain stored values from the save file.
+    @param The string you would like to get the value of.
+    @returns The value as a string.
+     */
     public static String getFileValue(String path) {
+        // Get the location of the value separator ":".
         int index = path.indexOf(":");
 
         String value = "";
 
+        // If there isn't a separator, return null.
         if (index == -1) {
             // Hint is not found.
             System.out.println("[ERROR] No category found!");
             return null;
         }
 
-        // The hint or category is equal to the rest of the string from the
-        // colon.
+        // Get the value using substring from the separator point.
         value = path.substring(index + 1);
 
+        // Trim any excess spaces.
         value.trim();
 
+        // Return the value.
         return value;
     }
 
-    public static boolean hasData() {
-        if (p == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    // Create an array of pressed keys.
+    static int[] pressed = new int[1];
 
-    static int[] pressed = new int[2];
-
+    // Create a new key listener to listen for key events.
     static KeyListener kl = new KeyListener() {
 
         public void keyTyped(KeyEvent arg0) {
@@ -584,41 +622,58 @@ public class DungeonTales extends JFrame {
         }
 
         public void keyReleased(KeyEvent e) {
+            // Get the key that was released.
             int key = e.getKeyCode();
 
+            // if the player hasn't even moved, then return.
             if(movement == null){
                 return;
             }
 
+            // If the key that is released was the left arrow remove it from the array.
             if (key == KeyEvent.VK_LEFT) {
                 pressed[0] = 0;
+                // Stop the movement timer.
                 movement.stop();
             } else if (key == KeyEvent.VK_RIGHT) {
+                // Reset the array.
                 pressed[0] = 0;
+                // Stop the movement timer.
                 movement.stop();
             }
         }
 
         public void keyPressed(KeyEvent e) {
+            // Get the key that was pressed.
             int key = e.getKeyCode();
 
+            // If the player pressed escape, pause the game.
             if (key == KeyEvent.VK_ESCAPE) {
+                // Make sure that the player is on a level, so they cannot pause at the menu screen.
                 if (menu.isVisible() || !p.canPause) {
                     return;
                 }
+
+                // Check to see if the game is paused already.
                 if (p.isPaused()) {
-                    // Already paused, unpause game.
+                    // The game is already paused, so remove the paused panel.
                     tales.remove(pausePanel);
+                    // Set the main panel to the current level.
                     tales.setContentPane(p.getCurrentLevel());
+                    // Reset the screen.
                     tales.validate();
+                    // Set paused to false - resume all game functions (movement etc.)
                     p.setPaused(false);
+                    // if the level is the tutorial level, reappear all the JLabels.
                     if (p.getCurrentLevel().equals(LevelManager.getLevel(4))) {
                         for (Component c : LevelManager.getLevel(4)
                                 .getComponents()) {
                             c.setVisible(true);
                         }
+                        // Set the tutorial layout to absolute for JLabel positioning.
                         LevelManager.getLevel(4).setLayout(null);
                     }
+                    // Restart playing the in game music file.
                     try {
                         stopMusicFile();
                         playMusicFile("NonBoss.wav", true);
@@ -628,28 +683,39 @@ public class DungeonTales extends JFrame {
                     }
                     return;
                 }
+                // The game is not paused yet, so stop the music file.
                 try {
                     stopMusicFile();
                 } catch (LineUnavailableException ee) {
                 }
+                // Check if the level being paused is the tutorial.
                 if (p.getCurrentLevel().equals(LevelManager.getLevel(4))) {
+                    // Create a level variable.
                     Level tutorial = LevelManager.getLevel(4);
 
+                    // Hide all the components on the level (JLabels).
                     for (Component c : tutorial.getComponents()) {
                         c.setVisible(false);
                     }
+                    // Add a layout to the screen for the pause menu.
                     tutorial.setLayout(new FlowLayout());
                 }
+                // Set paused to true.
                 p.setPaused(true);
+                // Add the pause panel.
                 tales.add(pausePanel);
+                // Repaint the current level to apply the new changes.
                 p.getCurrentLevel().repaint();
+                // Refresh the pane.
                 tales.validate();
             }
 
+            // If the game is paused, then block all movement.
             if (p.isPaused()) {
                 return;
             }
 
+            // If the player is attempting to leave the screen send them back.
             if (p.getX() > SCREEN_WIDTH - 140) {
                 p.setX(p.getX() - 7);
             }
@@ -657,19 +723,27 @@ public class DungeonTales extends JFrame {
                 p.setX(p.getX() + 7);
             }
 
+            // If the movement is null there was a problem so return.
             if(movement == null){
                 return;
             }
 
+            // Check to see if no keys are being pressed.
             if (pressed[0] == 0) {
+                // If the right arrow was pressed, add the key to the array.
                 if (key == KeyEvent.VK_RIGHT) {
                     pressed[0] = KeyEvent.VK_RIGHT;
+                    // Start the movement timer.
                     movement.start();
+                    // Change the picture to move right.
                     knight = knight3;
                 }
+                // If the left key was pressed, add it to the array.
                 if (key == KeyEvent.VK_LEFT) {
                     pressed[0] = KeyEvent.VK_LEFT;
+                    // Start the movement timer.
                     movement.start();
+                    // Change the image to the left.
                     knight= knight2;
                 }
             }

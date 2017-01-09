@@ -1248,7 +1248,7 @@ public class DungeonTales extends JFrame {
                                                  180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
       
       Rectangle[] spikesOne = {new Rectangle(400,275,500,25), new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100), new Rectangle(700, 730, 500, 30)};
-      Rectangle[] spikesTwo = {new Rectangle(100,200)};
+      Rectangle[] spikesTwo = {new Rectangle(900,960,500,100)};
       
       Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
                                  SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,

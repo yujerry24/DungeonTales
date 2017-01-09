@@ -30,6 +30,7 @@ public class DungeonTales extends JFrame {
         private boolean canMove = true;
         private boolean isMoving = false;
         private boolean isJumping;
+        private boolean isFalling;
         private boolean onPlat = false;
 
         public Player(String name) {
@@ -40,6 +41,7 @@ public class DungeonTales extends JFrame {
             this.isPaused = false;
             this.canPause = false;
             this.isJumping = false;
+            this.isFalling = false;
         }
 
         public String getName() {
@@ -72,6 +74,14 @@ public class DungeonTales extends JFrame {
 
         public void setCanMove(boolean canMove) {
             this.canMove = canMove;
+        }
+        
+        public boolean isFalling(){
+        	return this.isFalling;
+        }
+        
+        public void setFalling(boolean yes){
+        	this.isFalling = yes;
         }
 
         public void setY(int y) {
@@ -459,6 +469,16 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
+                // Create a rectangle at the player.
+                Rectangle player = new Rectangle(p.getX() + 80/2, p.getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
+                //p.getCurrentLevel().getGraphics().drawRect(p.getX() + 80/2, p.getY(), PLAYER_WIDTH - 70, PLAYER_HEIGHT - 20);
+                
+                for(Rectangle r : p.getCurrentLevel().getPlatforms()){
+                	if(r.intersects(player) && !p.isFalling){
+                		return;
+                	}
+                }
+                
                 if (pressed[0] == KeyEvent.VK_LEFT) {
                     p.setX(p.getX() - 2);
                 } else if (pressed[0] == KeyEvent.VK_RIGHT) {
@@ -481,15 +501,17 @@ public class DungeonTales extends JFrame {
                     }
 
                     // Create a rectangle at the player.
-                    Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY() + PLAYER_HEIGHT - 5, 1, 1);
+                    Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH/2 - 20, p.getY() + PLAYER_HEIGHT - 5, PLAYER_WIDTH/2 - 30, 1);
 
                     // Test code to draw the location of rectangle.
-                    // p.getCurrentLevel().getGraphics().drawRect( (int) player.getMaxX(), (int) player.getMaxY(), 1, 1);
+                    // p.getCurrentLevel().getGraphics().setColor(Color.red);
+                    // p.getCurrentLevel().getGraphics().fillRect(p.getX() + PLAYER_WIDTH/2 - 20, p.getY() + PLAYER_HEIGHT - 5, PLAYER_WIDTH/2 - 30, 1);
 
                     // Loop through all the platforms on the level, and compare their locations with the player.
                     for(Rectangle plat : p.getCurrentLevel().getPlatforms()){
                         if(plat.intersects(player)){
                             // Player is ontop of a platform, so gravity is not applied.
+                        	p.setFalling(false);
                             return;
                         }
                     }
@@ -511,6 +533,7 @@ public class DungeonTales extends JFrame {
                             // This is done for moving platforms to allow the player to stay on the platform as it moves.
                             plat.hasPlayer(true);
                             // Return to stop gravity from applying.
+                            p.setFalling(false);
                             return;
                         }else{
                             // Else the player is no longer on a platform.
@@ -525,6 +548,7 @@ public class DungeonTales extends JFrame {
                     // Main gravity control. Sends player to the lowest possible point on the level (Assuming no platform is found)
                     if (p.getY() < SCREEN_HEIGHT - GROUND_WIDTH - 125) {
                         // Make the player fall.
+                    	p.setFalling(true);
                         p.setY(p.getY() + 6);
                     }
                 }
@@ -1248,7 +1272,7 @@ public class DungeonTales extends JFrame {
                                                  180, 20), new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
       
       Rectangle[] spikesOne = {new Rectangle(400,275,500,25), new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100), new Rectangle(700, 730, 500, 30)};
-      Rectangle[] spikesTwo = {new Rectangle(900,960,500,100)};
+      Rectangle[] spikesTwo = {new Rectangle(100,200)};
       
       Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
                                  SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,

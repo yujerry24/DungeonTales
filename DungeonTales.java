@@ -165,7 +165,7 @@ public class DungeonTales extends JFrame {
 
     }
 
-    final static int GROUND_WIDTH = 50;
+    final static int GROUND_WIDTH = 20;
 
     static Image door;
     static Image knight;
@@ -1270,5 +1270,9 @@ public class DungeonTales extends JFrame {
       Platform lPlat2 = new Platform(SCREEN_WIDTH - 120, 100, SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 2);
       Platform lPlat3 = new Platform(350, 175, 950, 175, 90, 30, one, 2, 4);
       Platform lPlat4 = new Platform(600, 600, 1300, 600, 300, 30, one, 3, 2);
+        //Level 2
+         Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 200, 30),
+                new Rectangle(200, 700, SCREEN_WIDTH, 30)};
+        Level two = new Level(2, 40, 150, 1700, 880, p, twoPlats, 0, spikesTwo);
     }
 }

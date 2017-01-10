@@ -225,10 +225,6 @@ public class DungeonTales extends JFrame {
 						.getHeight(), null);
 			}
 
-			if (p.isVisible()) {
-				g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
-			}
-
 			for (Platform p : getMovingPlats()) {
 
 				if (p == null) {
@@ -236,6 +232,10 @@ public class DungeonTales extends JFrame {
 				}
 
 				g.fillRect(p.getX(), p.getY(), p.width, p.height);
+			}
+			
+			if (p.isVisible()) {
+				g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
 			}
 
 		}

@@ -379,6 +379,10 @@ public class DungeonTales extends JFrame {
 		public boolean isCompleted() {
 			return this.isCompleted;
 		}
+		
+		public void setCompleted(boolean completed){
+			this.isCompleted = completed;
+		}
 
 		public Platform[] getMovingPlats() {
 			return this.movingPlats;
@@ -826,7 +830,7 @@ public class DungeonTales extends JFrame {
 				jump = new Timer(5, new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						// Create a rectangle at the player.
-						Rectangle player = new Rectangle(p.getX()
+					/*	Rectangle player = new Rectangle(p.getX()
 								+ PLAYER_WIDTH / 2 - 20, p.getY(),
 								PLAYER_WIDTH / 2 - 30, 1);
 
@@ -834,7 +838,28 @@ public class DungeonTales extends JFrame {
 							if (r.intersects(player)) {
 								count = 100;
 							}
+						}*/
+						
+						// -------------------
+						// Create a rectangle at the player. (for the right)
+						Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2,
+								p.getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
+
+						// Create a rectangle at the player. (for the left)
+						Rectangle leftPlayer = new Rectangle(p.getX() + 40, p.getY(),
+								PLAYER_WIDTH / 2, PLAYER_HEIGHT - 20);
+
+						for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
+							if (r.intersects(rightPlayer)) {
+								p.setX(p.getX() - 2);
+								count = 100;
+							} else if (r.intersects(leftPlayer)) {
+								p.setX(p.getX() + 2);
+								count = 100;
+							}
 						}
+						// -------------------
+						
 						p.setY(p.getY() - 4);
 						p.isJumping = true;
 						doGravity = false;
@@ -1360,7 +1385,7 @@ public class DungeonTales extends JFrame {
 		Rectangle[] twoPlats = { new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
 				new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
 				new Rectangle(1600, 300, 30, 550),
-				new Rectangle(200, 850, 1400, 30) };
+				new Rectangle(200, 890, 1400, 30) };
 		Level two = new Level(2, 40, 150, 100, 680, p, twoPlats, 3, spikesTwo);
 		Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100,
 				SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);

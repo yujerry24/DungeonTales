@@ -488,7 +488,10 @@ public class DungeonTales extends JFrame {
                   tales.remove (p.getCurrentLevel());
                   tales.setContentPane (new MainMenu());
                   tales.validate();
-                try {
+		  pressed[0] = 0;
+		  JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
+		  p.getCurrentLevel().setCompleted(true);
+		try {
                   stopMusicFile();
                   playMusicFile("MenuMusic.wav", true);
                 } catch (IOException ee) {

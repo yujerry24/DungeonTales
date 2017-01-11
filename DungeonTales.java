@@ -966,15 +966,15 @@ public class DungeonTales extends JFrame {
                 jump = new Timer(5, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // Create a rectangle at the player.
-                    /*	Rectangle player = new Rectangle(p.getX()
-								+ PLAYER_WIDTH / 2 - 20, p.getY(),
-								PLAYER_WIDTH / 2 - 30, 1);
+                    /* Rectangle player = new Rectangle(p.getX()
+        + PLAYER_WIDTH / 2 - 20, p.getY(),
+        PLAYER_WIDTH / 2 - 30, 1);
 
-						for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-							if (r.intersects(player)) {
-								count = 100;
-							}
-						}*/
+      for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
+       if (r.intersects(player)) {
+        count = 100;
+       }
+      }*/
 
                         // -------------------
                         // Create a rectangle at the player. (for the right)
@@ -1460,7 +1460,7 @@ public class DungeonTales extends JFrame {
         Rectangle[] spikesOne = {new Rectangle(400, 275, 500, 25),
                 new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100),
                 new Rectangle(700, 730, 600, 30)};
-        Rectangle[] spikesTwo = {new Rectangle(100, 200)};
+        Rectangle[] spikesTwo = {new Rectangle(370, 270,650,30)};
 
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,

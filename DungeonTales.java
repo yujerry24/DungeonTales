@@ -510,7 +510,7 @@ public class DungeonTales extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-        movement = new Timer(4, new ActionListener() {
+        movement = new Timer(8, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
                 if (!(p.canMove())) {
@@ -553,15 +553,15 @@ public class DungeonTales extends JFrame {
 
                 for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
                     if (r.intersects(rightPlayer) && !p.isFalling) {
-                        p.setX(p.getX() - 4);
+                        p.setX(p.getX() - 2);
                         return;
                     } else if (r.intersects(leftPlayer) && !p.isFalling) {
-                        p.setX(p.getX() + 4);
+                        p.setX(p.getX() + 2);
                         return;
                     }
                 }
 
-                Rectangle door = new Rectangle(p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel().getEndY(), 187 - 90, 187);
+                Rectangle door = new Rectangle(p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel().getEndY(), 187 - 100, 187);
                 Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY(), 1, 1);
 
                 if (middlePlayer.intersects(door)){
@@ -966,15 +966,15 @@ public class DungeonTales extends JFrame {
                 jump = new Timer(5, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // Create a rectangle at the player.
-                    /* Rectangle player = new Rectangle(p.getX()
-        + PLAYER_WIDTH / 2 - 20, p.getY(),
-        PLAYER_WIDTH / 2 - 30, 1);
+                    /*	Rectangle player = new Rectangle(p.getX()
+								+ PLAYER_WIDTH / 2 - 20, p.getY(),
+								PLAYER_WIDTH / 2 - 30, 1);
 
-      for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-       if (r.intersects(player)) {
-        count = 100;
-       }
-      }*/
+						for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
+							if (r.intersects(player)) {
+								count = 100;
+							}
+						}*/
 
                         // -------------------
                         // Create a rectangle at the player. (for the right)
@@ -986,7 +986,7 @@ public class DungeonTales extends JFrame {
                                 PLAYER_WIDTH / 2, PLAYER_HEIGHT - 20);
 
                         for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-                            if (r.intersects(rightPlayer)) {
+                            if (r.intersects(rightPlayer) || r.intersects(leftPlayer)) {
                                 p.setX(p.getX() - 2);
                                 count = 100;
                             } else if (r.intersects(leftPlayer)) {
@@ -1310,6 +1310,7 @@ public class DungeonTales extends JFrame {
                         p.setY(p.getCurrentLevel().getSpawnY());
                         p.getCurrentLevel().getGameTimer().resumeTime();
                         p.canPause = true;
+                        p.getCurrentLevel().setLayout(null);
                         try {
                             stopMusicFile();
                             playMusicFile("NonBoss.wav", true);

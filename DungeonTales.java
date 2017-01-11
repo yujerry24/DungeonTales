@@ -185,7 +185,6 @@ public class DungeonTales extends JFrame {
             this.level = level;
             this.time = 0;
             al = new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     time++;
                 }
@@ -566,11 +565,12 @@ public class DungeonTales extends JFrame {
                 Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY(), 1, 1);
 
                 if (middlePlayer.intersects(door)){
+                    JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
                     tales.remove (p.getCurrentLevel());
                     tales.setContentPane (new MainMenu());
+                    p.getCurrentLevel().getGameTimer().pauseTime();
                     tales.validate();
                     pressed[0] = 0;
-                    JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
                     p.getCurrentLevel().setCompleted(true);
                     try {
                         stopMusicFile();
@@ -591,7 +591,6 @@ public class DungeonTales extends JFrame {
         });
 
         Timer collide = new Timer(5, new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 // Create a rectangle at the player. (for the right)
                 Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2,

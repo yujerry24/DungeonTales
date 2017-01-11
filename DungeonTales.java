@@ -488,6 +488,13 @@ public class DungeonTales extends JFrame {
                   tales.remove (p.getCurrentLevel());
                   tales.setContentPane (new MainMenu());
                   tales.validate();
+                try {
+                  stopMusicFile();
+                  playMusicFile("MenuMusic.wav", true);
+                } catch (IOException ee) {
+                } catch (LineUnavailableException ee) {
+                } catch (UnsupportedAudioFileException ee) {
+                }
                 }
 		        
 		 // Create a rectangle at the player. (for the right)

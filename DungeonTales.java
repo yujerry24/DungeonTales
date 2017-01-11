@@ -565,10 +565,11 @@ public class DungeonTales extends JFrame {
                 Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY(), 1, 1);
 
                 if (middlePlayer.intersects(door)){
+                    p.getCurrentLevel().getGameTimer().pauseTime();
                     JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
                     tales.remove (p.getCurrentLevel());
+                    p.getCurrentLevel().getGameTimer().resetTime();
                     tales.setContentPane (new MainMenu());
-                    p.getCurrentLevel().getGameTimer().pauseTime();
                     tales.validate();
                     pressed[0] = 0;
                     p.getCurrentLevel().setCompleted(true);
@@ -986,7 +987,7 @@ public class DungeonTales extends JFrame {
                                 PLAYER_WIDTH / 2, PLAYER_HEIGHT - 20);
 
                         for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-                            if (r.intersects(rightPlayer) || r.intersects(leftPlayer)) {
+                            if (r.intersects(rightPlayer)) {
                                 p.setX(p.getX() - 2);
                                 count = 100;
                             } else if (r.intersects(leftPlayer)) {

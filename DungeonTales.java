@@ -479,7 +479,18 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
-                // Create a rectangle at the player. (for the right)
+                Rectangle middlePlayer = new Rectangle(p.getX(), p.getY(),
+                                                       PLAYER_WIDTH, PLAYER_HEIGHT);
+                
+                Rectangle door = new Rectangle (p.getCurrentLevel().getEndX(), p.getCurrentLevel().getEndY(), 187, 187);
+                
+                if (middlePlayer.intersects(door)){
+                  tales.remove (p.getCurrentLevel());
+                  tales.setContentPane (new MainMenu());
+                  tales.validate();
+                }
+		        
+		 // Create a rectangle at the player. (for the right)
                 Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2,
                         p.getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
                 // p.getCurrentLevel().getGraphics().drawRect(p.getX() + 80/2,

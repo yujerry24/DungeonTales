@@ -196,6 +196,7 @@ public class DungeonTales extends JFrame {
             this.timer.stop();
         }
 
+        
         public void resumeTime() {
             this.timer.start();
         }
@@ -536,31 +537,6 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
-                // Create a rectangle at the player. (for the right)
-                Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2,
-                        p.getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
-                // p.getCurrentLevel().getGraphics().drawRect(p.getX() + 80/2,
-                // p.getY(), PLAYER_WIDTH - 70, PLAYER_HEIGHT - 20);
-
-                // Create a rectangle at the player. (for the left)
-                Rectangle leftPlayer = new Rectangle(p.getX() + 40, p.getY(),
-                        PLAYER_WIDTH / 2, PLAYER_HEIGHT - 20);
-
-                // Create a rectangle at the player.
-                Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH
-                        / 2 - 20, p.getY() + PLAYER_HEIGHT - 5,
-                        PLAYER_WIDTH / 2 - 30, 1);
-
-                for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-                    if (r.intersects(rightPlayer) && !p.isFalling) {
-                        p.setX(p.getX() - 2);
-                        return;
-                    } else if (r.intersects(leftPlayer) && !p.isFalling) {
-                        p.setX(p.getX() + 2);
-                        return;
-                    }
-                }
-
                 Rectangle door = new Rectangle(p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel().getEndY(), 187 - 100, 187);
                 Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY(), 1, 1);
 
@@ -601,7 +577,7 @@ public class DungeonTales extends JFrame {
 
                 // Create a rectangle at the player. (for the left)
                 Rectangle leftPlayer = new Rectangle(p.getX() + 40, p.getY(),
-                        PLAYER_WIDTH / 2, PLAYER_HEIGHT - 20);
+                        PLAYER_WIDTH / 2 - 30, PLAYER_HEIGHT - 20);
 
                 // Create a rectangle at the player.
                 Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH
@@ -610,6 +586,19 @@ public class DungeonTales extends JFrame {
 
                 if (p.getCurrentLevel() == null) {
                     return;
+                }
+                
+            //    p.getCurrentLevel().getGraphics().fillRect( (int) leftPlayer.getX(), (int) leftPlayer.getY(), leftPlayer.width, leftPlayer.height);
+            //    p.getCurrentLevel().getGraphics().fillRect( (int) rightPlayer.getX(), (int) rightPlayer.getY(), rightPlayer.width, rightPlayer.height);
+                
+                for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
+                    if (r.intersects(rightPlayer)) {
+                        p.setX(p.getX() - 4);
+                        return;
+                    } else if (r.intersects(leftPlayer)) {
+                        p.setX(p.getX() + 4);
+                        return;
+                    }
                 }
 
                 for (Rectangle spike : p.getCurrentLevel().getSpikes()) {
@@ -620,28 +609,6 @@ public class DungeonTales extends JFrame {
 
                     }
                 }
-
-                // Door intersection, commented out due to Alex's request.
-             /*   Rectangle door = new Rectangle(p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel().getEndY(), 187 - 90, 187);
-                Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY(), 1, 1);
-
-                if(door.intersects(middlePlayer)){
-                    // Player completed level.
-                    pressed[0] = 0;
-                    JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
-                    p.getCurrentLevel().setCompleted(true);
-                    tales.setContentPane(new MainMenu());
-                    tales.validate();
-                    p.setX(p.getCurrentLevel().getSpawnX());
-                    try {
-                        stopMusicFile();
-                        playMusicFile("MenuMusic.wav", true);
-                    } catch (IOException ee) {
-                    } catch (LineUnavailableException ee) {
-                    } catch (UnsupportedAudioFileException ee) {
-                    }
-                }*/
-
             }
         });
         collide.start();
@@ -966,18 +933,6 @@ public class DungeonTales extends JFrame {
 
                 jump = new Timer(5, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        // Create a rectangle at the player.
-                    /*	Rectangle player = new Rectangle(p.getX()
-								+ PLAYER_WIDTH / 2 - 20, p.getY(),
-								PLAYER_WIDTH / 2 - 30, 1);
-
-						for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
-							if (r.intersects(player)) {
-								count = 100;
-							}
-						}*/
-
-                        // -------------------
                         // Create a rectangle at the player. (for the right)
                         Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2,
                                 p.getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
@@ -995,7 +950,6 @@ public class DungeonTales extends JFrame {
                                 count = 100;
                             }
                         }
-                        // -------------------
 
                         p.setY(p.getY() - 4);
                         p.isJumping = true;
@@ -1080,6 +1034,7 @@ public class DungeonTales extends JFrame {
                     p.setPaused(false);
                     p.getCurrentLevel().getGameTimer().resetTime();
                     tales.setContentPane(new MainMenu());
+                    p.setCurrentLevel(null);
                     tales.validate();
                 }
 
@@ -1493,9 +1448,9 @@ public class DungeonTales extends JFrame {
         // Level 2
         Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
                 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
-                new Rectangle(1600, 300, 30, 550),
+                new Rectangle(1620, 300, 30, 550),
                 new Rectangle(200, 890, 1400, 30)};
-        Level two = new Level(2, 40, 150, 100, 680, p, twoPlats, 3, spikesTwo);
+        Level two = new Level(2, 40, 150, 100, 520, p, twoPlats, 3, spikesTwo);
         Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100,
                 SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);
         Platform Plat3 = new Platform(350, 175, 1150, 175, 90, 30, two, 2, 3);

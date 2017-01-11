@@ -175,6 +175,46 @@ public class DungeonTales extends JFrame {
 
     }
 
+    static class GameTimer {
+        private Timer timer;
+        private int time;
+        private ActionListener al;
+        private Level level;
+
+        public GameTimer(Level level) {
+            this.level = level;
+            this.time = 0;
+            al = new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    time++;
+                }
+            };
+            this.timer = new Timer(1000, al);
+        }
+
+        public void pauseTime() {
+            this.timer.stop();
+        }
+
+        public void resumeTime() {
+            this.timer.start();
+        }
+
+        public int getTime() {
+            return this.time;
+        }
+
+        public void setTime(int time) {
+            this.time = time;
+        }
+
+        public void resetTime() {
+            this.time = 0;
+        }
+
+    }
+
     final static int GROUND_WIDTH = 152;
 
     static Image door;
@@ -197,6 +237,8 @@ public class DungeonTales extends JFrame {
         private Rectangle[] platforms;
         private Platform[] movingPlats;
         private Rectangle[] spikes;
+        private GameTimer gt;
+        private JLabel time;
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -206,7 +248,7 @@ public class DungeonTales extends JFrame {
             g.fillRect(0, SCREEN_HEIGHT - GROUND_WIDTH, SCREEN_WIDTH,
                     SCREEN_HEIGHT);
             g.drawImage(menuBack, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
-            g.drawImage(door, endX,  endY, 187,
+            g.drawImage(door, endX, endY, 187,
                     187, null);
 
             for (Rectangle r : getPlatforms()) {
@@ -250,6 +292,7 @@ public class DungeonTales extends JFrame {
             this.endY = endY;
             this.p = p;
             this.spikes = spikes;
+            gt = new GameTimer(this);
 
             p.setX(spawnX);
             p.setY(spawnY);
@@ -258,6 +301,13 @@ public class DungeonTales extends JFrame {
             this.isCompleted = false;
             this.movingPlats = new Platform[movingPlats];
             LevelManager.levels[level - 1] = this;
+
+            setLayout(null);
+
+            time = new JLabel("<html><b>Time: " + this.getGameTimer().getTime() + "s</b></html>");
+            time.setBounds(SCREEN_WIDTH - 150, 0, 200, 100);
+
+            add(time);
 
             if (level == 4) {
                 setLayout(null);
@@ -292,6 +342,10 @@ public class DungeonTales extends JFrame {
                 public void actionPerformed(ActionEvent arg0) {
 
                     // TODO check if the key is being pressed.
+
+                    time.setText("<html><b>Time: " + getGameTimer().getTime() + "s</b></html>");
+                    time.setForeground(Color.WHITE);
+                    time.setFont(new Font(time.getFont().getName(), Font.PLAIN, 27));
 
                     repaint();
                     if (p.isPaused()) {
@@ -380,7 +434,7 @@ public class DungeonTales extends JFrame {
             return this.isCompleted;
         }
 
-        public void setCompleted(boolean completed){
+        public void setCompleted(boolean completed) {
             this.isCompleted = completed;
         }
 
@@ -398,6 +452,10 @@ public class DungeonTales extends JFrame {
 
         public void addPlatform(int id, Platform form) {
             this.movingPlats[id - 1] = form;
+        }
+
+        public GameTimer getGameTimer() {
+            return this.gt;
         }
 
     }
@@ -479,28 +537,7 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
-                Rectangle middlePlayer = new Rectangle(p.getX(), p.getY(),
-                                                       PLAYER_WIDTH, PLAYER_HEIGHT);
-                
-                Rectangle door = new Rectangle (p.getCurrentLevel().getEndX(), p.getCurrentLevel().getEndY(), 187, 187);
-                
-                if (middlePlayer.intersects(door)){
-                  tales.remove (p.getCurrentLevel());
-                  tales.setContentPane (new MainMenu());
-                  tales.validate();
-		  pressed[0] = 0;
-		  JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
-		  p.getCurrentLevel().setCompleted(true);
-		try {
-                  stopMusicFile();
-                  playMusicFile("MenuMusic.wav", true);
-                } catch (IOException ee) {
-                } catch (LineUnavailableException ee) {
-                } catch (UnsupportedAudioFileException ee) {
-                }
-                }
-		        
-		 // Create a rectangle at the player. (for the right)
+                // Create a rectangle at the player. (for the right)
                 Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2,
                         p.getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
                 // p.getCurrentLevel().getGraphics().drawRect(p.getX() + 80/2,
@@ -522,6 +559,25 @@ public class DungeonTales extends JFrame {
                     } else if (r.intersects(leftPlayer) && !p.isFalling) {
                         p.setX(p.getX() + 4);
                         return;
+                    }
+                }
+
+                Rectangle door = new Rectangle(p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel().getEndY(), 187 - 90, 187);
+                Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH/2, p.getY(), 1, 1);
+
+                if (middlePlayer.intersects(door)){
+                    tales.remove (p.getCurrentLevel());
+                    tales.setContentPane (new MainMenu());
+                    tales.validate();
+                    pressed[0] = 0;
+                    JOptionPane.showMessageDialog(p.getCurrentLevel(), "You've completed level " + p.getCurrentLevel().getLevel() + "!");
+                    p.getCurrentLevel().setCompleted(true);
+                    try {
+                        stopMusicFile();
+                        playMusicFile("MenuMusic.wav", true);
+                    } catch (IOException ee) {
+                    } catch (LineUnavailableException ee) {
+                    } catch (UnsupportedAudioFileException ee) {
                     }
                 }
 
@@ -552,12 +608,12 @@ public class DungeonTales extends JFrame {
                         / 2 - 20, p.getY() + PLAYER_HEIGHT - 5,
                         PLAYER_WIDTH / 2 - 30, 1);
 
-                if(p.getCurrentLevel() == null){
+                if (p.getCurrentLevel() == null) {
                     return;
                 }
 
-                for(Rectangle spike : p.getCurrentLevel().getSpikes()){
-                    if(spike.intersects(player) || spike.intersects(leftPlayer) || spike.intersects(rightPlayer)){
+                for (Rectangle spike : p.getCurrentLevel().getSpikes()) {
+                    if (spike.intersects(player) || spike.intersects(leftPlayer) || spike.intersects(rightPlayer)) {
                         // Player dies.
                         p.setX(p.getCurrentLevel().getSpawnX());
                         p.setY(p.getCurrentLevel().getSpawnY());
@@ -815,17 +871,17 @@ public class DungeonTales extends JFrame {
                     // Set paused to false - resume all game functions (movement
                     // etc.)
                     p.setPaused(false);
+                    // Resume the game timer
+                    p.getCurrentLevel().getGameTimer().resumeTime();
                     // if the level is the tutorial level, reappear all the
                     // JLabels.
-                    if (p.getCurrentLevel().equals(LevelManager.getLevel(4))) {
-                        for (Component c : LevelManager.getLevel(4)
-                                .getComponents()) {
-                            c.setVisible(true);
-                        }
-                        // Set the tutorial layout to absolute for JLabel
-                        // positioning.
-                        LevelManager.getLevel(4).setLayout(null);
+                    for (Component c : p.getCurrentLevel()
+                            .getComponents()) {
+                        c.setVisible(true);
                     }
+                    // Set the tutorial layout to absolute for JLabel
+                    // positioning.
+                    p.getCurrentLevel().setLayout(null);
                     // Restart playing the in game music file.
                     try {
                         stopMusicFile();
@@ -842,19 +898,19 @@ public class DungeonTales extends JFrame {
                 } catch (LineUnavailableException ee) {
                 }
                 // Check if the level being paused is the tutorial.
-                if (p.getCurrentLevel().equals(LevelManager.getLevel(4))) {
-                    // Create a level variable.
-                    Level tutorial = LevelManager.getLevel(4);
+                // Create a level variable.
+                Level tutorial = p.getCurrentLevel();
 
-                    // Hide all the components on the level (JLabels).
-                    for (Component c : tutorial.getComponents()) {
-                        c.setVisible(false);
-                    }
-                    // Add a layout to the screen for the pause menu.
-                    tutorial.setLayout(new FlowLayout());
+                // Hide all the components on the level (JLabels).
+                for (Component c : tutorial.getComponents()) {
+                    c.setVisible(false);
                 }
+                // Add a layout to the screen for the pause menu.
+                tutorial.setLayout(new FlowLayout());
                 // Set paused to true.
                 p.setPaused(true);
+                // Pause the timer
+                p.getCurrentLevel().getGameTimer().pauseTime();
                 // Add the pause panel.
                 tales.add(pausePanel);
                 // Repaint the current level to apply the new changes.
@@ -911,7 +967,7 @@ public class DungeonTales extends JFrame {
                 jump = new Timer(5, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // Create a rectangle at the player.
-					/*	Rectangle player = new Rectangle(p.getX()
+                    /*	Rectangle player = new Rectangle(p.getX()
 								+ PLAYER_WIDTH / 2 - 20, p.getY(),
 								PLAYER_WIDTH / 2 - 30, 1);
 
@@ -987,6 +1043,14 @@ public class DungeonTales extends JFrame {
                     tales.setContentPane(p.getCurrentLevel());
                     tales.validate();
                     p.setPaused(false);
+                    p.getCurrentLevel().getGameTimer().resumeTime();
+                    for (Component c : p.getCurrentLevel()
+                            .getComponents()) {
+                        c.setVisible(true);
+                    }
+                    // Set the tutorial layout to absolute for JLabel
+                    // positioning.
+                    p.getCurrentLevel().setLayout(null);
                     try {
                         stopMusicFile();
                         playMusicFile("NonBoss.wav", true);
@@ -1014,6 +1078,7 @@ public class DungeonTales extends JFrame {
                     } catch (UnsupportedAudioFileException ee) {
                     }
                     p.setPaused(false);
+                    p.getCurrentLevel().getGameTimer().resetTime();
                     tales.setContentPane(new MainMenu());
                     tales.validate();
                 }
@@ -1174,22 +1239,9 @@ public class DungeonTales extends JFrame {
                             System.out.println("[ERROR] Unable to load level.");
                             return;
                         }
-                        try {
-                            stopMusicFile();
-                            playMusicFile("NonBoss.wav", true);
-                        } catch (LineUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
                         panel.setVisible(false);
                         menu.setVisible(false);
                         p.setPaused(false);
-                        p.canPause = true;
                         p.setCurrentLevel(tutorial);
                         tales.setContentPane(tutorial);
                         tales.validate();
@@ -1218,19 +1270,6 @@ public class DungeonTales extends JFrame {
                         // tales.remove(menu);
                         tales.setContentPane(one);
                         tales.validate();
-                        try {
-                            stopMusicFile();
-                            playMusicFile("NonBoss.wav", true);
-                        } catch (LineUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                        p.canPause = true;
                     } else if (button == button3) {
                         if (two == null) {
                             JOptionPane
@@ -1246,19 +1285,6 @@ public class DungeonTales extends JFrame {
                         two.addKeyListener(kl);
                         tales.setContentPane(two);
                         tales.validate();
-                        p.canPause = true;
-                        try {
-                            stopMusicFile();
-                            playMusicFile("NonBoss.wav", true);
-                        } catch (LineUnavailableException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } catch (UnsupportedAudioFileException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
                     } else {
                         if (three == null) {
                             JOptionPane
@@ -1274,6 +1300,17 @@ public class DungeonTales extends JFrame {
                         three.addKeyListener(kl);
                         tales.setContentPane(three);
                         tales.validate();
+                    }
+
+                    if (p.getCurrentLevel() != null) {
+                        for (Component c : p.getCurrentLevel().getComponents()) {
+                            c.setVisible(true);
+                        }
+                        LevelManager.getLevel(4).setLayout(null);
+                        p.setX(p.getCurrentLevel().getSpawnX());
+                        p.setY(p.getCurrentLevel().getSpawnY());
+                        p.getCurrentLevel().getGameTimer().resumeTime();
+                        p.canPause = true;
                         try {
                             stopMusicFile();
                             playMusicFile("NonBoss.wav", true);
@@ -1286,16 +1323,6 @@ public class DungeonTales extends JFrame {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                        p.canPause = true;
-                    }
-
-                    if (p.getCurrentLevel() != null) {
-                        for (Component c : p.getCurrentLevel().getComponents()) {
-                            c.setVisible(true);
-                        }
-                        LevelManager.getLevel(4).setLayout(null);
-                        p.setX(p.getCurrentLevel().getSpawnX());
-                        p.setY(p.getCurrentLevel().getSpawnY());
                     }
 
                 }
@@ -1429,12 +1456,12 @@ public class DungeonTales extends JFrame {
 
         Rectangle[] tutorialPlats = {
                 new Rectangle(800, SCREEN_HEIGHT - 300, 180, 20),
-                new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900) };
+                new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
 
-        Rectangle[] spikesOne = { new Rectangle(400, 275, 500, 25),
+        Rectangle[] spikesOne = {new Rectangle(400, 275, 500, 25),
                 new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100),
-                new Rectangle(700, 730, 600, 30) };
-        Rectangle[] spikesTwo = { new Rectangle(100, 200) };
+                new Rectangle(700, 730, 600, 30)};
+        Rectangle[] spikesTwo = {new Rectangle(100, 200)};
 
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
@@ -1445,11 +1472,11 @@ public class DungeonTales extends JFrame {
 
         // Level 1
 
-        Rectangle[] onePlats = { new Rectangle(0, 300, 1000, 30),
+        Rectangle[] onePlats = {new Rectangle(0, 300, 1000, 30),
                 new Rectangle(1250, 300, 500, 30),
                 new Rectangle(200, 700, 500, 30),
                 new Rectangle(1300, 700, 750, 30),
-                new Rectangle(700, 760, 600, 30) };
+                new Rectangle(700, 760, 600, 30)};
 
         // Rectangle[] oneSpikes = {new Rectangle (700, 240, 30, 60)};
 
@@ -1463,10 +1490,10 @@ public class DungeonTales extends JFrame {
         Platform lPlat3 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
         Platform lPlat4 = new Platform(600, 600, 1300, 600, 300, 30, one, 3, 2);
         // Level 2
-        Rectangle[] twoPlats = { new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
+        Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
                 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
                 new Rectangle(1600, 300, 30, 550),
-                new Rectangle(200, 890, 1400, 30) };
+                new Rectangle(200, 890, 1400, 30)};
         Level two = new Level(2, 40, 150, 100, 680, p, twoPlats, 3, spikesTwo);
         Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100,
                 SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);

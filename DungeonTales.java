@@ -18,6 +18,28 @@ import javax.swing.*;
 public class DungeonTales extends JFrame {
 
     static Player p;
+    static int count = 0;
+    static Timer jump;
+    static PausePanel pausePanel;
+    final static int GROUND_WIDTH = 152;
+    static Image door;
+    static Image knight;
+    static Image knight2;
+    static Image knight3;
+    static Image pause;
+    static Image menuBack;
+    static Image spikeImage;
+    static final int PLAYER_WIDTH = 150;
+    static final int PLAYER_HEIGHT = 125;
+    static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    final static int SCREEN_HEIGHT = (int) dim.getHeight();
+    final static int SCREEN_WIDTH = (int) dim.getWidth();
+    static Clip clip;
+    static MainMenu menu;
+    static boolean doGravity = true;
+    static Timer movement;
+    // Create an array of pressed keys.
+    static int[] pressed = new int[1];
 
     static class Player {
         private int x;
@@ -196,7 +218,7 @@ public class DungeonTales extends JFrame {
             this.timer.stop();
         }
 
-        
+
         public void resumeTime() {
             this.timer.start();
         }
@@ -214,19 +236,6 @@ public class DungeonTales extends JFrame {
         }
 
     }
-
-    final static int GROUND_WIDTH = 152;
-
-    static Image door;
-    static Image knight;
-    static Image knight2;
-    static Image knight3;
-    static Image pause;
-    static Image menuBack;
-    static Image spikeImage;
-
-    static int PLAYER_WIDTH = 150;
-    static int PLAYER_HEIGHT = 125;
 
     static class Level extends JPanel {
 
@@ -476,11 +485,6 @@ public class DungeonTales extends JFrame {
         }
     }
 
-    static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-
-    final static int SCREEN_HEIGHT = (int) dim.getHeight();
-    final static int SCREEN_WIDTH = (int) dim.getWidth();
-
     public DungeonTales() {
         setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         setResizable(false);
@@ -587,10 +591,10 @@ public class DungeonTales extends JFrame {
                 if (p.getCurrentLevel() == null) {
                     return;
                 }
-                
-            //    p.getCurrentLevel().getGraphics().fillRect( (int) leftPlayer.getX(), (int) leftPlayer.getY(), leftPlayer.width, leftPlayer.height);
-            //    p.getCurrentLevel().getGraphics().fillRect( (int) rightPlayer.getX(), (int) rightPlayer.getY(), rightPlayer.width, rightPlayer.height);
-                
+
+                //    p.getCurrentLevel().getGraphics().fillRect( (int) leftPlayer.getX(), (int) leftPlayer.getY(), leftPlayer.width, leftPlayer.height);
+                //    p.getCurrentLevel().getGraphics().fillRect( (int) rightPlayer.getX(), (int) rightPlayer.getY(), rightPlayer.width, rightPlayer.height);
+
                 for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
                     if (r.intersects(rightPlayer)) {
                         p.setX(p.getX() - 4);
@@ -699,11 +703,6 @@ public class DungeonTales extends JFrame {
         gravity.start();
     }
 
-    static Clip clip;
-    static MainMenu menu;
-    static boolean doGravity = true;
-    static Timer movement;
-
     /*
      * Method to play a music file.
      *
@@ -781,9 +780,6 @@ public class DungeonTales extends JFrame {
         // Return the value.
         return value;
     }
-
-    // Create an array of pressed keys.
-    static int[] pressed = new int[1];
 
     // Create a new key listener to listen for key events.
     static KeyListener kl = new KeyListener() {
@@ -931,6 +927,7 @@ public class DungeonTales extends JFrame {
                     return;
                 }
 
+                // Timer for creating the jump animation.
                 jump = new Timer(5, new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         // Create a rectangle at the player. (for the right)
@@ -951,60 +948,76 @@ public class DungeonTales extends JFrame {
                             }
                         }
 
+                        // Make the player move up by 4 pixels each time the timer runs.
                         p.setY(p.getY() - 4);
+                        // Set the player to be jumping
                         p.isJumping = true;
+                        // Disable gravity to allow the player to move upwards.
                         doGravity = false;
+                        // Add to the counter, eventually causing the jump to stop.
                         count += 2;
+                        // Once the counter has reached 100, stop the jumping, and begin falling.
                         if (count >= 100) {
+                            // Make sure the timer isn't null.
                             if (jump != null) {
-
+                                // The player is no longer jumping
                                 p.isJumping = false;
+                                // Enable gravity
                                 doGravity = true;
+                                // Reset the counter to allow more jumps.
                                 count = 0;
+                                // Stop the current timer.
                                 jump.stop();
                             }
                         }
                     }
                 });
+                // Start the jump timer.
                 jump.start();
             }
 
         }
     };
 
-    static int count = 0;
-    static Timer jump;
-
-    static PausePanel pausePanel;
-
-    // Pause panel
+    // Pause panel class.
     class PausePanel extends JPanel {
 
+        // Create an action listener to listen for buttons.
         ActionListener listener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // Make sure the event is being fired due to a JButton being pressed.
                 if (!(e.getSource() instanceof JButton)) {
                     return;
                 }
 
+                // Get the source of the event, cast it to a JButton.
                 JButton button = (JButton) e.getSource();
 
+                // Reset the colour of the button for the next pause panel.
                 button.setForeground(Color.white);
 
                 // TODO implement instructions.
 
+                // If the player presses resume game button
                 if (button.getText().equalsIgnoreCase("Resume Game")) {
+                    // Remove the pause panel.
                     tales.remove(pausePanel);
+                    // Reset the screen to display the current level.
                     tales.setContentPane(p.getCurrentLevel());
+                    // Refresh the JFrame.
                     tales.validate();
+                    // Set the game to be no longer paused.
                     p.setPaused(false);
+                    // Resume the game timer.
                     p.getCurrentLevel().getGameTimer().resumeTime();
+                    // Make all components on the level visible again.
                     for (Component c : p.getCurrentLevel()
                             .getComponents()) {
                         c.setVisible(true);
                     }
-                    // Set the tutorial layout to absolute for JLabel
-                    // positioning.
+                    // Set the layout to absolute for component positioning.
                     p.getCurrentLevel().setLayout(null);
+                    // Begin the music once again.
                     try {
                         stopMusicFile();
                         playMusicFile("NonBoss.wav", true);
@@ -1013,17 +1026,25 @@ public class DungeonTales extends JFrame {
                     } catch (UnsupportedAudioFileException ee) {
                     }
                     return;
+                    // Else if the player presses the quit game button.
                 } else if (button.getText().equalsIgnoreCase("Quit Game")) {
+                    // Create variables to catch the result of the confirmation dialog.
                     int result = 0;
+                    // Display a confirmation dialog confirmed the player would like to quit the game.
                     int dialog = JOptionPane
                             .showConfirmDialog(null,
                                     "Are you sure you want to quit?",
                                     "Warning", result);
+                    // If the user does want to quit the game
                     if (dialog == JOptionPane.YES_OPTION) {
+                        // Close the game.
                         System.exit(0);
                     }
+                    // If the user presses the menu button
                 } else if (button.getText().equalsIgnoreCase("Return To Menu")) {
+                    // Remove the pause panel.
                     tales.remove(pausePanel);
+                    // Stop other music, and play menu music.
                     try {
                         stopMusicFile();
                         playMusicFile("MenuMusic.wav", true);
@@ -1031,61 +1052,98 @@ public class DungeonTales extends JFrame {
                     } catch (LineUnavailableException ee) {
                     } catch (UnsupportedAudioFileException ee) {
                     }
+                    // Set the game to be no longer paused.
                     p.setPaused(false);
+                    // Reset the time of the current level they were on.
                     p.getCurrentLevel().getGameTimer().resetTime();
+                    // Set the JFrame to display the main menu.
                     tales.setContentPane(new MainMenu());
+                    // Set the current level to be null.
                     p.setCurrentLevel(null);
+                    // Refresh the JFrame.
                     tales.validate();
                 }
 
             }
         };
 
+        // Constructor for the pause panel class.
         public PausePanel() {
+            // Create a layout for the pause panel.
             GridBagLayout layout = new GridBagLayout();
+            // Set the layout of the panel to previously created layout.
             setLayout(layout);
+            // Get the grid bag constraints from the layout.
             GridBagConstraints gc = layout.getConstraints(this);
+            // Set the background colour to be a transparent dark colour.
             setBackground(new Color(0, 0, 0, 195));
+            // Set the size of the panel to cover the whole screen.
             setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 
+            // Get the main logo image.
             ImageIcon logo = new ImageIcon("Logo.png");
+            // Create a JLabel to hold the logo.
             JLabel label3 = new JLabel(logo);
+            // Set the size of the JLabel.
             label3.setPreferredSize(new Dimension(1000, 800));
+            // Set the location of the image.
             label3.setLocation(SCREEN_WIDTH / 2 - 1000, SCREEN_HEIGHT / 2);
+            // Position the JLabel.
             gc.gridx = 0;
             gc.gridy = 0;
+            // Give room below the JLabel.
             gc.insets = new Insets(0, 0, 20, 0);
+            // Add the JLabel to the pause panel.
             add(label3, gc);
 
+            // Create the JLabel for the Paused Game text.
             JLabel title = new JLabel("Paused Game");
+            // Set the font size, and make the text bold.
             title.setFont(new Font(title.getFont().getName(), Font.BOLD, 42));
+            // Make the text colour white.
             title.setForeground(Color.white);
+            // Position the JLabel.
             gc.gridx = 0;
             gc.gridy = 1;
+            // Add the JLabel to pause panel.
             add(title, gc);
 
+            // Create a JButton for resume game.
             JButton resume = new JButton("Resume Game");
+            // Set the font size.
             resume.setFont(new Font(resume.getFont().getName(), Font.PLAIN,
                     title.getFont().getSize() - 18));
+            // Format the button to make it look nicer.
             resume.setBorderPainted(false);
             resume.setFocusable(false);
             resume.setContentAreaFilled(false);
+            // Set the text colour to white.
             resume.setForeground(Color.white);
+            // Position the JButton.
             gc.gridy = 2;
+            // Add the mouse and action listener.
             resume.addActionListener(listener);
             resume.addMouseListener(ml);
+            // Add the JButton to the panel.
             add(resume, gc);
 
+            // Create a JButton for the instructions button.
             JButton instructions = new JButton("Instructions");
+            // Set the font size of the button.
             instructions.setFont(new Font(instructions.getFont().getName(),
                     Font.PLAIN, title.getFont().getSize() - 18));
+            // Format the button.
             instructions.setBorderPainted(false);
             instructions.setFocusable(false);
             instructions.setContentAreaFilled(false);
+            // Set the text colour to white.
             instructions.setForeground(Color.white);
+            // Position the button.
             gc.gridy = 3;
+            // Add listeners to the button
             instructions.addActionListener(listener);
             instructions.addMouseListener(ml);
+            // Add the button to the panel.
             add(instructions, gc);
 
             JButton menu = new JButton("Return To Menu");

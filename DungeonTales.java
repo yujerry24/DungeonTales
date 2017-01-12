@@ -29,6 +29,7 @@ public class DungeonTales extends JFrame {
     static Image pause;
     static Image menuBack;
     static Image spikeImage;
+    static Image platformImage;
     static final int PLAYER_WIDTH = 150;
     static final int PLAYER_HEIGHT = 125;
     static Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -266,8 +267,9 @@ public class DungeonTales extends JFrame {
                     return;
                 }
 
-                g.fillRect((int) r.getBounds().getMinX(), (int) r.getBounds()
-                        .getMinY(), (int) r.getWidth(), (int) r.getHeight());
+                g.drawImage(platformImage, (int) r.getBounds().getMinX(), (int) r
+                        .getBounds().getMinY(), (int) r.getWidth(), (int) r
+                        .getHeight(), null);
             }
 
             for (Rectangle s : getSpikes()) {
@@ -498,6 +500,7 @@ public class DungeonTales extends JFrame {
             knight3 = ImageIO.read(new File("Knight.png"));
             menuBack = ImageIO.read(new File("menuBack.jpg"));
             spikeImage = ImageIO.read(new File("spikes.png"));
+            platformImage = ImageIO.read(new File("platformWall.jpg"));
         } catch (IOException e) {
         } catch (LineUnavailableException e) {
         } catch (UnsupportedAudioFileException e) {

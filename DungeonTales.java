@@ -1273,6 +1273,15 @@ public class DungeonTales extends JFrame {
 
 			addKeyListener(kl);
 
+			JLabel jlabel = new JLabel("Sound Credits");
+   			jlabel.setFont(new Font("Verdana",1,20));
+   			panel5.add(jlabel);
+   
+   			JLabel label2 = new JLabel ("https://www.youtube.com/user/gamingsoundfx");
+   			label2.setFont(new Font("Verdana",1,20));
+   			panel5.add(label2);
+			
+			
 			ActionListener al = new ActionListener() {
 
 				public void actionPerformed(ActionEvent event) {

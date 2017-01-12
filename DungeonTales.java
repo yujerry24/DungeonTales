@@ -608,14 +608,18 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
-                for (Rectangle spike : p.getCurrentLevel().getSpikes()) {
-                    if (spike.intersects(player) || spike.intersects(leftPlayer) || spike.intersects(rightPlayer)) {
-                        // Player dies.
-                        p.setX(p.getCurrentLevel().getSpawnX());
-                        p.setY(p.getCurrentLevel().getSpawnY());
+                				for (Rectangle spike : p.getCurrentLevel().getSpikes()) {
+					Rectangle newSpike = new Rectangle((int) spike.getX() + 50, (int) spike.getY(), spike.width - 95, spike.height);
+					p.getCurrentLevel().getGraphics().fillRect((int) newSpike.getX(), (int) newSpike.getY(), newSpike.width, newSpike.height);
 
-                    }
-                }
+					if (newSpike.intersects(player)
+							|| newSpike.intersects(leftPlayer)
+							|| newSpike.intersects(rightPlayer)) {
+						// Player dies.
+						p.setX(p.getCurrentLevel().getSpawnX());
+						p.setY(p.getCurrentLevel().getSpawnY());
+					}
+				}
             }
         });
         collide.start();
@@ -1490,52 +1494,43 @@ public class DungeonTales extends JFrame {
 
     public static void registerLevels() {
 
-        // Tutorial
+ 		// Tutorial
+		Rectangle[] spikesTut = { new Rectangle(0, 0, 0, 0) };
+		Rectangle[] tutorialPlats = {
+				new Rectangle(800, SCREEN_HEIGHT - 300, 180, 20),
+				new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900) };
+		Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
+				SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
+				tutorialPlats, 1, spikesTut);
+		tutorial.addKeyListener(kl);
+		Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial,
+				1, 2);
 
-        Rectangle[] tutorialPlats = {
-                new Rectangle(800, SCREEN_HEIGHT - 300, 180, 20),
-                new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
-
-        Rectangle[] spikesOne = {new Rectangle(400, 275, 500, 25),
-                new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100),
-                new Rectangle(700, 730, 600, 30)};
-        Rectangle[] spikesTwo = {new Rectangle(370, 270,650,30)};
-
-        Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
-                SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
-                tutorialPlats, 1, spikesOne);
-        tutorial.addKeyListener(kl);
-        Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial,
-                1, 2);
-
-        // Level 1
-
-        Rectangle[] onePlats = {new Rectangle(0, 300, 1000, 30),
-                new Rectangle(1250, 300, 500, 30),
-                new Rectangle(200, 700, 500, 30),
-                new Rectangle(1300, 700, 750, 30),
-                new Rectangle(700, 760, 600, 30)};
-
-        // Rectangle[] oneSpikes = {new Rectangle (700, 240, 30, 60)};
-
-        Level one = new Level(1, 20, 20, SCREEN_WIDTH - 300, SCREEN_HEIGHT - GROUND_WIDTH - 50, p, onePlats, 3, spikesOne);
-
-        tutorial.addKeyListener(kl);
-        // Platform lPlat1 = new Platform(1050, 30, 1050, 330, 90, 30, one, 1,
-        // 2);
-        Platform lPlat2 = new Platform(SCREEN_WIDTH - 120, 100,
-                SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 2);
-        Platform lPlat3 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
-        Platform lPlat4 = new Platform(600, 600, 1300, 600, 300, 30, one, 3, 2);
-        // Level 2
-        Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
-                new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
-                new Rectangle(1620, 300, 30, 550),
-                new Rectangle(200, 890, 1400, 30)};
-        Level two = new Level(2, 40, 150, 100, 520, p, twoPlats, 3, spikesTwo);
-        Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100,
-                SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);
-        Platform Plat3 = new Platform(350, 175, 1150, 175, 90, 30, two, 2, 3);
-        Platform Plat4 = new Platform(600, 600, 1300, 600, 300, 30, two, 3, 2);
+		// Level 1
+		Rectangle[] spikesOne = { new Rectangle(400, 275, 500, 25),
+				new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100),
+				new Rectangle(700, 730, 600, 30) };
+		Rectangle[] onePlats = { new Rectangle(0, 300, 1000, 30),
+				new Rectangle(1250, 300, 500, 30),
+				new Rectangle(200, 700, 500, 30),
+				new Rectangle(1300, 700, 750, 30),
+				new Rectangle(700, 760, 600, 30) };
+		Level one = new Level(1, 20, 20, SCREEN_WIDTH - 300, SCREEN_HEIGHT
+				- GROUND_WIDTH - 50, p, onePlats, 3, spikesOne);
+		Platform lPlat2 = new Platform(SCREEN_WIDTH - 120, 100,
+				SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 2);
+		Platform lPlat3 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
+		Platform lPlat4 = new Platform(600, 600, 1300, 600, 300, 30, one, 3, 2);
+		
+		// Level 2
+		Rectangle[] spikesTwo = { new Rectangle(370, 270, 650, 30) };
+		Rectangle[] twoPlats = { new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
+				new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
+				new Rectangle(200, 890, 1400, 30) };
+		Level two = new Level(2, 40, 150, 100, 520, p, twoPlats, 3, spikesTwo);
+		Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100,
+				SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);
+		Platform Plat3 = new Platform(350, 175, 1150, 175, 90, 30, two, 2, 3);
+		Platform Plat4 = new Platform(600, 600, 1300, 600, 300, 30, two, 3, 2);
     }
 }

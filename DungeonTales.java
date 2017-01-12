@@ -1146,34 +1146,47 @@ public class DungeonTales extends JFrame {
             // Add the button to the panel.
             add(instructions, gc);
 
+            // Create return to menu button.
             JButton menu = new JButton("Return To Menu");
+            // Set the font of the menu button.
             menu.setFont(new Font(menu.getFont().getName(), Font.PLAIN, title
                     .getFont().getSize() - 18));
+            // Format the button.
             menu.setBorderPainted(false);
             menu.setFocusable(false);
             menu.setContentAreaFilled(false);
+            // Set the text to be white.
             menu.setForeground(Color.white);
+            // Add the listeners, and position the button.
             menu.addActionListener(listener);
             menu.addMouseListener(ml);
             gc.gridy = 4;
+            // Add the button to the pause panel.
             add(menu, gc);
 
+            // Create JButton to quit the game.
             JButton quit = new JButton("Quit Game");
+            // Set the font size of the button.
             quit.setFont(new Font(quit.getFont().getName(), Font.PLAIN, title
                     .getFont().getSize() - 18));
+            // Format the button.
             quit.setBorderPainted(false);
             quit.setFocusable(false);
             quit.setContentAreaFilled(false);
+            // Set the text to white.
             quit.setForeground(Color.white);
+            // Add the listeners, and position the button.
             quit.addActionListener(listener);
             quit.addMouseListener(ml);
             gc.gridy = 5;
+            // Add the button to the JPanel.
             add(quit, gc);
 
         }
 
     }
 
+    // Create a mouse listener to catch the hover event.
     static MouseListener ml = new MouseListener() {
 
         public void mouseClicked(MouseEvent e) {
@@ -1185,24 +1198,32 @@ public class DungeonTales extends JFrame {
         public void mouseReleased(MouseEvent e) {
         }
 
+        // When the mouse enters the JButton.
         public void mouseEntered(MouseEvent e) {
+        	// Make sure they are hovering over a button.
             if (!(e.getSource() instanceof JButton)) {
                 return;
             }
 
+            // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
 
+            // Set the colour of the button to green.
             button.setForeground(Color.green);
 
         }
 
+        // When the mouse no longer hovers over the button.
         public void mouseExited(MouseEvent e) {
+        	// Make sure they are leaving a button.
             if (!(e.getSource() instanceof JButton)) {
                 return;
             }
-
+            
+            // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
 
+            // Set the colour of the button to white.
             button.setForeground(Color.white);
 
         }

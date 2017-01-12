@@ -253,9 +253,10 @@ public class DungeonTales extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
+			g.drawImage(platformImage, 0, SCREEN_HEIGHT - GROUND_WIDTH, SCREEN_WIDTH, GROUND_WIDTH, null);
 			g.setColor(new Color(93, 100, 112));
 			g.fillRect(0, SCREEN_HEIGHT - GROUND_WIDTH, SCREEN_WIDTH,
-					SCREEN_HEIGHT);
+					GROUND_WIDTH);
 			g.drawImage(menuBack, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
 			g.drawImage(door, endX, endY, 187, 187, null);
 
@@ -311,7 +312,7 @@ public class DungeonTales extends JFrame {
 			this.isCompleted = false;
 			this.movingPlats = new Platform[movingPlats];
 			LevelManager.levels[level - 1] = this;
-
+						
 			setLayout(null);
 
 			time = new JLabel("<html><b>Time: " + this.getGameTimer().getTime()
@@ -352,14 +353,12 @@ public class DungeonTales extends JFrame {
 			ActionListener al = new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 
-					// TODO check if the key is being pressed.
-
 					time.setText("<html><b>Time: " + getGameTimer().getTime()
 							+ "s</b></html>");
 					time.setForeground(Color.WHITE);
 					time.setFont(new Font(time.getFont().getName(), Font.PLAIN,
 							27));
-
+	
 					repaint();
 					if (p.isPaused()) {
 						return;
@@ -601,13 +600,6 @@ public class DungeonTales extends JFrame {
 				if (p.getCurrentLevel() == null) {
 					return;
 				}
-
-				// p.getCurrentLevel().getGraphics().fillRect( (int)
-				// leftPlayer.getX(), (int) leftPlayer.getY(), leftPlayer.width,
-				// leftPlayer.height);
-				// p.getCurrentLevel().getGraphics().fillRect( (int)
-				// rightPlayer.getX(), (int) rightPlayer.getY(),
-				// rightPlayer.width, rightPlayer.height);
 
 				for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
 					if (r.intersects(rightPlayer)) {
@@ -1281,14 +1273,6 @@ public class DungeonTales extends JFrame {
 
 			addKeyListener(kl);
 
-			JLabel jlabel = new JLabel("Sound Credits");
-   			jlabel.setFont(new Font("Verdana",1,20));
-   			panel5.add(jlabel);
-   
-   			JLabel label2 = new JLabel ("https://www.youtube.com/user/gamingsoundfx");
-   			label2.setFont(new Font("Verdana",1,20));
-   			panel5.add(label2);
-
 			ActionListener al = new ActionListener() {
 
 				public void actionPerformed(ActionEvent event) {
@@ -1531,9 +1515,9 @@ public class DungeonTales extends JFrame {
 				1, 2);
 
 		// Level 1
-		Rectangle[] spikesOne = { new Rectangle(400, 275, 500, 25),
-				new Rectangle(SCREEN_WIDTH - 180, 600, 180, 100),
-				new Rectangle(700, 730, 600, 30) };
+		Rectangle[] spikesOne = { new Rectangle(400, 275, 120, 25), new Rectangle(510, 275, 120, 25), new Rectangle(620, 275, 120, 25), new Rectangle(730, 275, 120, 25),
+				new Rectangle(SCREEN_WIDTH - 120, 670, 120, 30),
+				new Rectangle(700, 730, 120, 30), new Rectangle(810, 730, 120, 30), new Rectangle(920, 730, 120, 30), new Rectangle(1030, 730, 120, 30), new Rectangle(1140, 730, 150, 30),};
 		Rectangle[] onePlats = { new Rectangle(0, 300, 1000, 30),
 				new Rectangle(1250, 300, 500, 30),
 				new Rectangle(200, 700, 500, 30),

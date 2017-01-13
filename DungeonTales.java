@@ -361,7 +361,7 @@ public class DungeonTales extends JFrame {
                 // Create the tutorial messages
                 JLabel moveTip = new JLabel(
                         "<html><b>TIP:</b><br>Use the arrow keys<br>to navigate the level!</html>");
-                moveTip.setBounds(getSpawnX() + 50, getSpawnY() - 160, 300, 100);
+                moveTip.setBounds(getSpawnX() + 20, getSpawnY() - 160, 300, 100);
                 moveTip.setForeground(Color.white);
                 moveTip.setFont(new Font(moveTip.getFont().getName(),
                         Font.ITALIC, 20));
@@ -369,7 +369,7 @@ public class DungeonTales extends JFrame {
 
                 JLabel doorTip = new JLabel(
                         "<html><b>TIP:</b><br>Reach these doors<br>to complete the level!</html>");
-                doorTip.setBounds(getEndX() + 50, getSpawnY() - 160, 300, 100);
+                doorTip.setBounds(getEndX() + 20, getSpawnY() - 180, 300, 100);
                 doorTip.setForeground(Color.white);
                 doorTip.setFont(new Font(doorTip.getFont().getName(),
                         Font.ITALIC, 20));
@@ -377,12 +377,30 @@ public class DungeonTales extends JFrame {
 
                 JLabel platTip = new JLabel(
                         "<html><b>TIP:</b><br>Jump on these platforms<br>to reach higher parts!</html>");
-                platTip.setBounds(SCREEN_WIDTH / 2 - 200, getSpawnY() - 360,
+                platTip.setBounds(SCREEN_WIDTH / 2 - 570, getSpawnY() - 200,
                         300, 100);
                 platTip.setForeground(Color.white);
                 platTip.setFont(new Font(platTip.getFont().getName(),
                         Font.ITALIC, 20));
                 add(platTip);
+
+                JLabel spikeTip = new JLabel(
+                        "<html><b>TIP:</b><br>Avoid touching these<br>spikes or you'll respawn!</html>");
+                spikeTip.setBounds(SCREEN_WIDTH / 2 - 270, getSpawnY() - 400,
+                        300, 100);
+                spikeTip.setForeground(Color.white);
+                spikeTip.setFont(new Font(spikeTip.getFont().getName(),
+                        Font.ITALIC, 20));
+                add(spikeTip);
+
+                JLabel movingPlatTip = new JLabel(
+                        "<html><b>TIP:</b><br>These platforms move, side to<br>side, and up and down.<br>use them to reach platforms!</html>");
+                movingPlatTip.setBounds(SCREEN_WIDTH / 2, getSpawnY() - 300,
+                        300, 100);
+                movingPlatTip.setForeground(Color.white);
+                movingPlatTip.setFont(new Font(movingPlatTip.getFont().getName(),
+                        Font.ITALIC, 20));
+                add(movingPlatTip);
             }
 
             ActionListener al = new ActionListener() {
@@ -1599,15 +1617,17 @@ public class DungeonTales extends JFrame {
     public static void registerLevels() {
 
         // Tutorial
-        Rectangle[] spikesTut = {new Rectangle(0, 0, 0, 0)};
+        Rectangle[] spikesTut = {new Rectangle(725, SCREEN_HEIGHT - 50, 120, 25)};
         Rectangle[] tutorialPlats = {
-                new Rectangle(800, SCREEN_HEIGHT - 300, 180, 20),
-                new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900)};
-        Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH - 150,
-                SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 100, p,
+                new Rectangle(400, SCREEN_HEIGHT - 150, 180, 20),
+                new Rectangle(1420, SCREEN_HEIGHT - 550, 40, 900),
+                new Rectangle(680, SCREEN_HEIGHT - GROUND_WIDTH - 130, 40, 130 + GROUND_WIDTH),
+                new Rectangle(855, SCREEN_HEIGHT - GROUND_WIDTH - 180, 40, 180 + GROUND_WIDTH)};
+        Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH,
+                SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 50, p,
                 tutorialPlats, 1, spikesTut);
         tutorial.addKeyListener(kl);
-        Platform tPlat1 = new Platform(1250, 750, 1250, 1030, 90, 30, tutorial,
+        Platform tPlat1 = new Platform(1250, 650, 1250, 1030, 90, 30, tutorial,
                 1, 2);
 
         // Level 1

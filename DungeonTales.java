@@ -1073,6 +1073,12 @@ public class DungeonTales extends JFrame {
 					p.getCurrentLevel().getGameTimer().resetTime();
 					// Set the JFrame to display the main menu.
 					tales.setContentPane(new MainMenu());
+					// Remove the player from any platforms
+					for(Platform plat : p.getCurrentLevel().getMovingPlats()){
+						if(plat.hasPlayer()){
+							plat.hasPlayer = false;
+						}
+					}
 					// Set the current level to be null.
 					p.setCurrentLevel(null);
 					// Refresh the JFrame.

@@ -643,6 +643,7 @@ public class DungeonTales extends JFrame {
 					if (p.getCurrentLevel() == null) {
 						return;
 					}
+					
 
 					// Create a rectangle at the player.
 					Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH
@@ -658,7 +659,14 @@ public class DungeonTales extends JFrame {
 					// Loop through all the platforms on the level, and compare
 					// their locations with the player.
 					for (Rectangle plat : p.getCurrentLevel().getPlatforms()) {
-						if (plat.intersects(player)) {
+						Rectangle newPlat = new Rectangle((int) plat.getX(), (int) plat.getY(), plat.width, 10);
+						if (newPlat.intersects(player)) {
+							
+							// Make sure the player is falling
+							if(!p.isFalling){
+								return;
+							}
+							
 							// Player is ontop of a platform, so gravity is not
 							// applied.
 							p.setFalling(false);
@@ -1550,19 +1558,19 @@ public class DungeonTales extends JFrame {
 		Platform lPlat4 = new Platform(600, 600, 1300, 600, 300, 30, one, 3, 2);
 
 		 // Level 2
- 		 Rectangle[] spikesTwo = { new Rectangle(370, 270, 120, 30),new Rectangle(480, 270, 120, 30), new Rectangle(590, 270, 120, 30),new Rectangle(700, 270, 120, 30),new Rectangle(810, 270, 120, 30),new Rectangle(920, 270, 120, 30) };
- 		 Rectangle[] twoPlats = { new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
-    		 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
-   		 new Rectangle(200, 890, 1400, 30) };
-  		 Level two = new Level(2, 40, 150, 100, 425, p, twoPlats, 3, spikesTwo);
-  
-  	 	 //First platform in level that moves left to right
-  	  	 Platform Plat1 = new Platform(350, 175, 1050, 175, 90, 30, two, 2, 3);
-  	
-  		 //Platform on right that moves up and down
-  	 	 Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100, SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);
-  	
-  		 //Platform in center of screen that 
+		 Rectangle[] spikesTwo = { new Rectangle(370, 270, 120, 30),new Rectangle(480, 270, 120, 30), new Rectangle(590, 270, 120, 30),new Rectangle(700, 270, 120, 30),new Rectangle(810, 270, 120, 30),new Rectangle(920, 270, 120, 30) };
+		 Rectangle[] twoPlats = { new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
+   		 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
+  		 new Rectangle(200, 890, 1400, 30) };
+ 		 Level two = new Level(2, 40, 150, 100, 425, p, twoPlats, 3, spikesTwo);
+ 
+ 	 	 //First platform in level that moves left to right
+ 	  	 Platform Plat1 = new Platform(350, 175, 1050, 175, 90, 30, two, 2, 3);
+ 	
+ 		 //Platform on right that moves up and down
+ 	 	 Platform Plat2 = new Platform(SCREEN_WIDTH - 120, 100, SCREEN_WIDTH - 120, 600, 90, 30, two, 1, 2);
+ 	
+ 		 //Platform in center of screen that 
 	  	 Platform Plat3 = new Platform(800, 600, 1300, 600, 300, 30, two, 3, 2);
 	}
 }

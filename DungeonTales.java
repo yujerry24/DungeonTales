@@ -600,6 +600,10 @@ public class DungeonTales extends JFrame {
 				if (p.getCurrentLevel() == null) {
 					return;
 				}
+				
+				if(p.isFalling){
+					return;
+				}
 
 				for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
 					if (r.intersects(rightPlayer)) {

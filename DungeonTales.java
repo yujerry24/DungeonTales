@@ -545,6 +545,10 @@ public class DungeonTales extends JFrame {
 					}
 				}
 
+				if(p.getCurrentLevel() == null){
+					return;
+				}
+				
 				Rectangle door = new Rectangle(
 						p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel()
 								.getEndY(), 187 - 100, 187);
@@ -598,10 +602,6 @@ public class DungeonTales extends JFrame {
 						PLAYER_WIDTH / 2 - 30, 1);
 
 				if (p.getCurrentLevel() == null) {
-					return;
-				}
-				
-				if(p.isFalling){
 					return;
 				}
 
@@ -1582,3 +1582,5 @@ public class DungeonTales extends JFrame {
 	  	 Platform Plat3 = new Platform(800, 600, 1300, 600, 300, 30, two, 3, 2);
 	}
 }
+
+

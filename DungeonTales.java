@@ -898,6 +898,15 @@ public class DungeonTales extends JFrame {
                 // Make sure that the player is on a level, so they cannot pause
                 // at the menu screen.
                 if (menu.isVisible() || !p.canPause) {
+                    if(menu.isVisible()){
+                        for(Component c : menu.getComponents()){
+                            if(c instanceof JButton){
+                                JButton button = (JButton) c;
+                                button.setForeground(Color.white);
+                            }
+                        }
+                        tales.setContentPane(menu);
+                    }
                     return;
                 }
 
@@ -1209,6 +1218,8 @@ public class DungeonTales extends JFrame {
                     }
                     // Set the current level to be null.
                     p.setCurrentLevel(null);
+                    // Set menuscreen visible
+                    menu.setVisible(true);
                     // Refresh the JFrame.
                     tales.validate();
                 } else if (button.getText().equalsIgnoreCase("Instructions")) {
@@ -1344,6 +1355,9 @@ public class DungeonTales extends JFrame {
     static MouseListener ml = new MouseListener() {
 
         public void mouseClicked(MouseEvent e) {
+            if(e.getSource() instanceof JButton){
+                JButton button = (JButton) e.getSource();
+            }
         }
 
         public void mousePressed(MouseEvent e) {
@@ -1362,8 +1376,12 @@ public class DungeonTales extends JFrame {
             // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
 
-            // Set the colour of the button to green.
-            button.setForeground(Color.green);
+            if (button.getText().equalsIgnoreCase("Quit")) {
+                button.setForeground(Color.red);
+            } else {
+                // Set the colour of the button to green.
+                button.setForeground(Color.green);
+            }
 
         }
 
@@ -1391,7 +1409,8 @@ public class DungeonTales extends JFrame {
         JButton button3 = new JButton("Level 2");
         JButton button4 = new JButton("Level 3");
         JButton credits = new JButton("Credits");
-        JButton back = new JButton("QUIT");
+        JButton instructions = new JButton("Instructions");
+        JButton quit = new JButton("Quit");
         JPanel panel1 = new JPanel(), panel2 = new JPanel(),
                 panel3 = new JPanel(), panel4 = new JPanel(),
                 panel5 = new JPanel();
@@ -1442,11 +1461,13 @@ public class DungeonTales extends JFrame {
                         p.setCurrentLevel(tutorial);
                         tales.setContentPane(tutorial);
                         tales.validate();
-                    } else if (button == back) {
-                        panel.setVisible(false);
-                        tales.setContentPane(panel);
+                    } else if (button == quit) {
+                        System.exit(0);
+                    }else if(button == instructions) {
+                        button.setForeground(Color.white);
+                        tales.setContentPane(new Instructions());
                         tales.validate();
-                    } else if (button == credits) {
+                    }else if (button == credits) {
                         panel.setVisible(false);
                         tales.setContentPane(panel5);
                         tales.validate();
@@ -1533,17 +1554,12 @@ public class DungeonTales extends JFrame {
 
             p.canPause = false;
 
-            back.setLocation(100, 100);
-            back.setPreferredSize(dimB);
-            panel1.add(back);
-            panel2.add(back);
+            add(quit);
             // panel3.add(back);
             // panel4.add(back);
             // panel5.add(back);
-            back.addActionListener(al);
+            quit.addActionListener(al);
 
-            buttonT.setLocation(100, 100);
-            buttonT.setPreferredSize(dimB);
             buttonT.setContentAreaFilled(false);
             buttonT.setBorderPainted(false);
             buttonT.setFocusable(false);
@@ -1589,6 +1605,30 @@ public class DungeonTales extends JFrame {
             add(button4);
             button4.addActionListener(al);
             button4.addMouseListener(ml);
+
+            instructions.setLocation(100, 100);
+            instructions.setPreferredSize(dimB);
+            instructions.setContentAreaFilled(false);
+            instructions.setBorderPainted(false);
+            instructions.setForeground(Color.white);
+            instructions.setFocusable(false);
+            instructions.setFont(new Font(instructions.getFont().getName(), Font.PLAIN,
+                    30));
+            add(instructions);
+            instructions.addActionListener(al);
+            instructions.addMouseListener(ml);
+            
+            quit.setLocation(100, 100);
+            quit.setPreferredSize(dimB);
+            quit.setContentAreaFilled(false);
+            quit.setBorderPainted(false);
+            quit.setForeground(Color.white);
+            quit.setFocusable(false);
+            quit.setFont(new Font(quit.getFont().getName(), Font.PLAIN,
+                    30));
+            add(quit);
+            quit.addActionListener(al);
+            quit.addMouseListener(ml);
 
             credits.setLocation(100, 100);
             credits.setPreferredSize(dimB);

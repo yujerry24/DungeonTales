@@ -644,6 +644,9 @@ public class DungeonTales extends JFrame {
 						return;
 					}
 					
+					if(p.isPaused){
+						return;
+					}
 
 					// Create a rectangle at the player.
 					Rectangle player = new Rectangle(p.getX() + PLAYER_WIDTH
@@ -951,6 +954,11 @@ public class DungeonTales extends JFrame {
 				// Timer for creating the jump animation.
 				jump = new Timer(5, new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						
+						if(p.isPaused){
+							return;
+						}
+						
 						// Create a rectangle at the player. (for the right)
 						Rectangle rightPlayer = new Rectangle(
 								p.getX() + 90 / 2, p.getY(), PLAYER_WIDTH - 80,

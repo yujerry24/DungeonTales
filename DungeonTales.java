@@ -1404,29 +1404,29 @@ public class DungeonTales extends JFrame {
             if (button.getText().equalsIgnoreCase("Quit")) {
                 button.setForeground(Color.red);
                 return;
-            } else if(button.getText().indexOf("Level") != -1){
+            } else if (button.getText().indexOf("Level") != -1) {
                 Level tutorial = LevelManager.getLevel(4);
                 Level one = LevelManager.getLevel(1);
                 Level two = LevelManager.getLevel(2);
 
-                if(button.getText().indexOf("1") != -1){
-                    if(!tutorial.isCompleted()){
+                if (button.getText().indexOf("1") != -1) {
+                    if (!tutorial.isCompleted()) {
                         return;
                     }
-                }else if(button.getText().indexOf("2") != -1){
-                    if(!one.isCompleted()){
+                } else if (button.getText().indexOf("2") != -1) {
+                    if (!one.isCompleted()) {
                         return;
                     }
-                }else if(button.getText().indexOf("3") != -1){
-                    if(!two.isCompleted()){
+                } else if (button.getText().indexOf("3") != -1) {
+                    if (!two.isCompleted()) {
                         return;
                     }
                 }
 
             }
 
-                // Set the colour of the button to green.
-                button.setForeground(Color.green);
+            // Set the colour of the button to green.
+            button.setForeground(Color.green);
 
         }
 
@@ -1440,33 +1440,45 @@ public class DungeonTales extends JFrame {
             // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
 
-            if(button.getText().indexOf("Level") != -1){
+            if (button.getText().indexOf("Level") != -1 || button.getText().equalsIgnoreCase("Tutorial")) {
                 Level tutorial = LevelManager.getLevel(4);
                 Level one = LevelManager.getLevel(1);
                 Level two = LevelManager.getLevel(2);
                 Level three = LevelManager.getLevel(3);
 
-                if(button.getText().indexOf("1") != -1){
-                    if(!one.isCompleted()){
+                if (button.getText().indexOf("1") != -1) {
+                    if (!tutorial.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
+                    } else if(one.isCompleted()) {
+                        button.setForeground(Color.green);
+                    }else{
+                        button.setForeground(Color.white);
                     }
-                }else if(button.getText().indexOf("2") != -1){
-                    if(!two.isCompleted()){
+                } else if (button.getText().indexOf("2") != -1) {
+                    if (!one.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
+                    } else if(two.isCompleted()) {
+                        button.setForeground(Color.green);
+                    }else{
+                        button.setForeground(Color.white);
                     }
-                }else if(button.getText().indexOf("3") != -1){
-                    if(!three.isCompleted()){
+                } else if (button.getText().indexOf("3") != -1) {
+                    if (!two.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
+                    } else if(three.isCompleted()) {
+                        button.setForeground(Color.green);
+                    }else{
+                        button.setForeground(Color.white);
                     }
                 }
 
+            } else {
+                // Set the colour of the button to white.
+                button.setForeground(Color.white);
             }
-
-            // Set the colour of the button to white.
-            button.setForeground(Color.white);
 
         }
     };
@@ -1503,11 +1515,11 @@ public class DungeonTales extends JFrame {
 
             panel5.setLayout(null);
 
-            panel5.setBackground (Color.lightGray);
+            panel5.setBackground(Color.lightGray);
 
-            JLabel creditsTitle = new JLabel ("CREDITS");
-            creditsTitle.setFont (new Font ("TimesRoman", Font.BOLD+Font.ITALIC, 80));
-            creditsTitle.setBounds (SCREEN_WIDTH / 2 - 500 , 150, SCREEN_WIDTH - 500, 100);
+            JLabel creditsTitle = new JLabel("CREDITS");
+            creditsTitle.setFont(new Font("TimesRoman", Font.BOLD + Font.ITALIC, 80));
+            creditsTitle.setBounds(SCREEN_WIDTH / 2 - 500, 150, SCREEN_WIDTH - 500, 100);
             panel5.add(creditsTitle);
 
             JLabel creditsInfo = new JLabel("<html>Sound Credits:<br>https://www.youtube.com/user/gamingsoundfx<br><br>" +
@@ -1516,8 +1528,8 @@ public class DungeonTales extends JFrame {
                     "http://steamtradingcards.wikia.com/wiki/File:Darkest_Dungeon_Background_The_Ruins.jpg<br><br>" +
                     "Spikes Image Credits: <br> http://sonic.wikia.com/wiki/Spikes_(obstacle)<br><br>Game created by Justin, Alex, and Jerry<html>");
 
-            creditsInfo.setFont (new Font ("TimesRoman", Font.BOLD, 18));
-            creditsInfo.setBounds (SCREEN_WIDTH / 2 - 500 , 0, SCREEN_WIDTH - 500, SCREEN_HEIGHT);
+            creditsInfo.setFont(new Font("TimesRoman", Font.BOLD, 18));
+            creditsInfo.setBounds(SCREEN_WIDTH / 2 - 500, 0, SCREEN_WIDTH - 500, SCREEN_HEIGHT);
             panel5.add(creditsInfo);
 
             JLabel jlabel = new JLabel("Sound Credits");
@@ -1534,7 +1546,7 @@ public class DungeonTales extends JFrame {
             back.setBorderPainted(false);
             back.setFocusable(false);
             back.setFont(new Font(back.getFont().getName(), Font.PLAIN, 25));
-            back.setBounds(SCREEN_WIDTH / 2 - 500 , 0, SCREEN_WIDTH - 900, SCREEN_HEIGHT + 700);
+            back.setBounds(SCREEN_WIDTH / 2 - 500, 0, SCREEN_WIDTH - 900, SCREEN_HEIGHT + 700);
             panel5.add(back);
 
 
@@ -1549,23 +1561,23 @@ public class DungeonTales extends JFrame {
 
                     JButton button = (JButton) event.getSource();
 
-                    if(button.getText().indexOf("Level") != -1){
+                    if (button.getText().indexOf("Level") != -1) {
                         Level tutorial = LevelManager.getLevel(4);
                         Level one = LevelManager.getLevel(1);
                         Level two = LevelManager.getLevel(2);
 
-                        if(button.getText().indexOf("1") != -1){
-                            if(!tutorial.isCompleted()){
+                        if (button.getText().indexOf("1") != -1) {
+                            if (!tutorial.isCompleted()) {
                                 JOptionPane.showMessageDialog(menu, "You have not unlocked this level yet!", "Uh oh!", JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             }
-                        }else if(button.getText().indexOf("2") != -1){
-                            if(!one.isCompleted()){
+                        } else if (button.getText().indexOf("2") != -1) {
+                            if (!one.isCompleted()) {
                                 JOptionPane.showMessageDialog(menu, "You have not unlocked this level yet!", "Uh oh!", JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             }
-                        }else if(button.getText().indexOf("3") != -1){
-                            if(!two.isCompleted()){
+                        } else if (button.getText().indexOf("3") != -1) {
+                            if (!two.isCompleted()) {
                                 JOptionPane.showMessageDialog(menu, "You have not unlocked this level yet!", "Uh oh!", JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             }
@@ -1573,7 +1585,7 @@ public class DungeonTales extends JFrame {
 
                     }
 
-                    if(button.getText().equalsIgnoreCase("Main Menu")){
+                    if (button.getText().equalsIgnoreCase("Main Menu")) {
                         tales.setContentPane(new MainMenu());
                         tales.validate();
                         return;
@@ -1695,7 +1707,11 @@ public class DungeonTales extends JFrame {
             buttonT.setContentAreaFilled(false);
             buttonT.setBorderPainted(false);
             buttonT.setFocusable(false);
-            buttonT.setForeground(Color.white);
+            if (!tutorial.isCompleted()) {
+                buttonT.setForeground(Color.white);
+            } else {
+                buttonT.setForeground(Color.green);
+            }
             buttonT.setFont(new Font(buttonT.getFont().getName(), Font.PLAIN,
                     30));
             add(buttonT);
@@ -1710,8 +1726,14 @@ public class DungeonTales extends JFrame {
             button2.setForeground(Color.white);
             button2.setFont(new Font(button2.getFont().getName(), Font.PLAIN,
                     30));
-            if (!one.isCompleted()) {
+            if (!tutorial.isCompleted()) {
                 button2.setForeground(Color.red);
+            } else {
+                if (!one.isCompleted()) {
+                    button2.setForeground(Color.white);
+                } else {
+                    button2.setForeground(Color.green);
+                }
             }
             add(button2);
             button2.addActionListener(al);
@@ -1725,8 +1747,14 @@ public class DungeonTales extends JFrame {
             button3.setFocusable(false);
             button3.setFont(new Font(button3.getFont().getName(), Font.PLAIN,
                     30));
-            if (!two.isCompleted()) {
+            if (!one.isCompleted()) {
                 button3.setForeground(Color.red);
+            } else {
+                if (!two.isCompleted()) {
+                    button3.setForeground(Color.white);
+                } else {
+                    button3.setForeground(Color.green);
+                }
             }
             add(button3);
             button3.addActionListener(al);
@@ -1740,8 +1768,14 @@ public class DungeonTales extends JFrame {
             button4.setFocusable(false);
             button4.setFont(new Font(button4.getFont().getName(), Font.PLAIN,
                     30));
-            if (!three.isCompleted()) {
+            if (!two.isCompleted()) {
                 button4.setForeground(Color.red);
+            } else {
+                if (!three.isCompleted()) {
+                    button4.setForeground(Color.white);
+                } else {
+                    button4.setForeground(Color.green);
+                }
             }
             add(button4);
             button4.addActionListener(al);
@@ -1811,11 +1845,11 @@ public class DungeonTales extends JFrame {
         Platform tPlat1 = new Platform(1250, 650, 1250, 1030, 90, 30, tutorial,
                 1, 2);
 
-         // Level 1
+        // Level 1
         Rectangle[] spikesOne = {new Rectangle(400, 275, 120, 25), new Rectangle(510, 275, 120, 25), new Rectangle(620, 275, 120, 25), new Rectangle(730, 275, 120, 25),
                 new Rectangle(SCREEN_WIDTH - 120, 670, 120, 30),
                 new Rectangle(700, 730, 120, 30), new Rectangle(810, 730, 120, 30), new Rectangle(920, 730, 120, 30), new Rectangle(1030, 730, 120, 30), new Rectangle(1140, 730, 150, 30),
-        new Rectangle (SCREEN_WIDTH - 620, 670, 120, 30)};
+                new Rectangle (SCREEN_WIDTH - 620, 670, 120, 30)};
         Rectangle[] onePlats = {new Rectangle(0, 300, 850, 30),
                 new Rectangle(1250, 300, 500, 30),
                 new Rectangle(200, 700, 500, 30),
@@ -1828,7 +1862,6 @@ public class DungeonTales extends JFrame {
         Platform lPlat2 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
         Platform lPlat3 = new Platform(700, 600, 950, 600, 60, 30, one, 3, 4);
         Platform lPlat4 = new Platform (1050, 600, 1600, 600, 90, 30, one, 4, 6);
-
         // Level 2
         Rectangle[] spikesTwo = {new Rectangle(370, 270, 120, 30), new Rectangle(480, 270, 120, 30), new Rectangle(590, 270, 120, 30), new Rectangle(700, 270, 120, 30), new Rectangle(810, 270, 120, 30), new Rectangle(920, 270, 120, 30)};
         Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),

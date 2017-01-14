@@ -1,8 +1,7 @@
-import org.w3c.dom.css.Rect;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -276,7 +275,6 @@ public class DungeonTales extends JFrame {
 
         private int level;
         private int spawnX, spawnY, endX, endY;
-        private boolean isCompleted;
         private Player p;
         private Rectangle[] platforms;
         private Platform[] movingPlats;
@@ -344,7 +342,6 @@ public class DungeonTales extends JFrame {
             p.setY(spawnY);
             p.setVisible(true);
             this.platforms = platforms;
-            this.isCompleted = false;
             this.movingPlats = new Platform[movingPlats];
             LevelManager.levels[level - 1] = this;
 
@@ -496,11 +493,46 @@ public class DungeonTales extends JFrame {
         }
 
         public boolean isCompleted() {
-            return this.isCompleted;
+
+            File save = new File("save.txt");
+
+            // Create a scanner for the file.
+            Scanner input = null;
+            try {
+                input = new Scanner(save);
+            } catch (IOException e) {
+                System.out.println("[ERROR] Unable to access save.txt");
+            }
+
+            if (input == null) {
+                return false;
+            }
+
+            // Loop through each file value.
+            while (input.hasNext()) {
+                // Get the line in the file.
+                String line = input.nextLine();
+                // Get the saved player name from the file.
+                if (line.equalsIgnoreCase(Integer.toString(getLevel()) + "Completed:true")) {
+                    // Get the value
+                    String completed = getFileValue(line);
+                    if (completed.equalsIgnoreCase("true")) {
+                        input.close();
+                        return true;
+                    }
+                }
+            }
+            // Close the input.
+            input.close();
+
+            return false;
         }
 
         public void setCompleted(boolean completed) {
-            this.isCompleted = completed;
+            try {
+                writeToFile(getLevel() + "Completed:true");
+            } catch (IOException e) {
+            }
         }
 
         public Platform[] getMovingPlats() {
@@ -610,10 +642,10 @@ public class DungeonTales extends JFrame {
 
                 if (middlePlayer.intersects(door)) {
                     p.getCurrentLevel().getGameTimer().pauseTime();
-                    if(p.getCurrentLevel().getLevel() == 4){
+                    if (p.getCurrentLevel().getLevel() == 4) {
                         JOptionPane.showMessageDialog(p.getCurrentLevel(),
                                 "You've completed the tutorial in " + p.getCurrentLevel().getGameTimer().getTime() + " seconds!");
-                    }else {
+                    } else {
                         JOptionPane.showMessageDialog(p.getCurrentLevel(),
                                 "You've completed level "
                                         + p.getCurrentLevel().getLevel() + " in " + p.getCurrentLevel().getGameTimer().getTime() + " seconds!");
@@ -721,7 +753,7 @@ public class DungeonTales extends JFrame {
                     // Loop through all the platforms on the level, and compare
                     // their locations with the player.
                     for (Rectangle plat : p.getCurrentLevel().getPlatforms()) {
-                        Rectangle newPlat = new Rectangle((int) plat.getX(), (int) plat.getY(), plat.width, 10);
+                        Rectangle newPlat = new Rectangle((int) plat.getX(), (int) plat.getY(), plat.width, 8);
                         if (newPlat.intersects(player)) {
 
                             // Make sure the player is falling
@@ -746,7 +778,7 @@ public class DungeonTales extends JFrame {
 
                         // Create a rectangle out of the platform object.
                         Rectangle r = new Rectangle(plat.getX(), plat.getY(),
-                                plat.width, 10);
+                                plat.width, 8);
 
                         // Check if the players rectangle is intersecting with a
                         // platform.
@@ -904,9 +936,9 @@ public class DungeonTales extends JFrame {
                 // Make sure that the player is on a level, so they cannot pause
                 // at the menu screen.
                 if (menu.isVisible() || !p.canPause) {
-                    if(menu.isVisible()){
-                        for(Component c : menu.getComponents()){
-                            if(c instanceof JButton){
+                    if (menu.isVisible()) {
+                        for (Component c : menu.getComponents()) {
+                            if (c instanceof JButton) {
                                 JButton button = (JButton) c;
                                 button.setForeground(Color.white);
                             }
@@ -1184,7 +1216,7 @@ public class DungeonTales extends JFrame {
                     return;
                     // Else if the player presses the quit game button.
                 } else if (button.getText().equalsIgnoreCase("Quit Game")) {
-                   quitGame();
+                    quitGame();
                     // If the user presses the menu button
                 } else if (button.getText().equalsIgnoreCase("Return To Menu")) {
                     // Remove the pause panel.
@@ -1348,7 +1380,7 @@ public class DungeonTales extends JFrame {
     static MouseListener ml = new MouseListener() {
 
         public void mouseClicked(MouseEvent e) {
-            if(e.getSource() instanceof JButton){
+            if (e.getSource() instanceof JButton) {
                 JButton button = (JButton) e.getSource();
             }
         }
@@ -1456,11 +1488,11 @@ public class DungeonTales extends JFrame {
                         tales.validate();
                     } else if (button == quit) {
                         System.exit(0);
-                    }else if(button == instructions) {
+                    } else if (button == instructions) {
                         button.setForeground(Color.white);
                         tales.setContentPane(new Instructions());
                         tales.validate();
-                    }else if (button == credits) {
+                    } else if (button == credits) {
                         panel.setVisible(false);
                         tales.setContentPane(panel5);
                         tales.validate();
@@ -1572,7 +1604,7 @@ public class DungeonTales extends JFrame {
             button2.setForeground(Color.white);
             button2.setFont(new Font(button2.getFont().getName(), Font.PLAIN,
                     30));
-            if(!one.isCompleted()){
+            if (!one.isCompleted()) {
                 button2.setForeground(Color.red);
             }
             add(button2);
@@ -1587,7 +1619,7 @@ public class DungeonTales extends JFrame {
             button3.setFocusable(false);
             button3.setFont(new Font(button3.getFont().getName(), Font.PLAIN,
                     30));
-            if(!two.isCompleted()){
+            if (!two.isCompleted()) {
                 button3.setForeground(Color.red);
             }
             add(button3);
@@ -1602,7 +1634,7 @@ public class DungeonTales extends JFrame {
             button4.setFocusable(false);
             button4.setFont(new Font(button4.getFont().getName(), Font.PLAIN,
                     30));
-            if(!three.isCompleted()){
+            if (!three.isCompleted()) {
                 button4.setForeground(Color.red);
             }
             add(button4);
@@ -1620,7 +1652,7 @@ public class DungeonTales extends JFrame {
             add(instructions);
             instructions.addActionListener(al);
             instructions.addMouseListener(ml);
-            
+
             quit.setLocation(100, 100);
             quit.setPreferredSize(dimB);
             quit.setContentAreaFilled(false);
@@ -1657,7 +1689,7 @@ public class DungeonTales extends JFrame {
 
     }
 
-    public static void registerLevels() {
+    public static void registerLevels() throws IOException {
 
         // Tutorial
         Rectangle[] spikesTut = {new Rectangle(725, SCREEN_HEIGHT - 50, 120, 25)};
@@ -1711,10 +1743,9 @@ public class DungeonTales extends JFrame {
                 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
                 new Rectangle(200, 890, 1400, 30)};
         Level three = new Level(3, 40, 150, 100, 425, p, threePlats, 0, spikesThree);
-
     }
 
-    public static void quitGame(){
+    public static void quitGame() {
         // Create variables to catch the result of the confirmation
         // dialog.
         int result = 0;
@@ -1729,6 +1760,17 @@ public class DungeonTales extends JFrame {
             // Close the game.
             System.exit(0);
         }
+    }
+
+    public static void writeToFile(String text) throws IOException {
+        File save = new File("save.txt");
+        if (!save.exists()) {
+            return;
+        }
+
+        PrintWriter out = new PrintWriter(new FileWriter(save, true));
+        out.println(text);
+        out.close();
     }
 
     public static void main(String[] args) throws IOException {
@@ -1746,27 +1788,9 @@ public class DungeonTales extends JFrame {
             out.close();
             // Create a new instance of a player.
             p = new Player("John");
+        } else {
+            p = new Player("John");
         }
-
-        // Create a scanner for the file.
-        Scanner input = new Scanner(save);
-        // Loop through each file value.
-        while (input.hasNext()) {
-            // Get the line in the file.
-            String line = input.nextLine();
-            // Get the saved player name from the file.
-            if (line.indexOf("Player Name:") != -1) {
-                // Get the name.
-                String name = getFileValue(line);
-                // Create a new player with that name.
-                p = new Player(name);
-            } else {
-                // No player is saved, so create a new one.
-                p = new Player("John");
-            }
-        }
-        // Close the input.
-        input.close();
 
         // Register levels
         registerLevels();
@@ -1776,5 +1800,3 @@ public class DungeonTales extends JFrame {
 
     }
 }
-
-

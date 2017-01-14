@@ -1178,20 +1178,7 @@ public class DungeonTales extends JFrame {
                     return;
                     // Else if the player presses the quit game button.
                 } else if (button.getText().equalsIgnoreCase("Quit Game")) {
-                    // Create variables to catch the result of the confirmation
-                    // dialog.
-                    int result = 0;
-                    // Display a confirmation dialog confirmed the player would
-                    // like to quit the game.
-                    int dialog = JOptionPane
-                            .showConfirmDialog(null,
-                                    "Are you sure you want to quit?",
-                                    "Warning", result);
-                    // If the user does want to quit the game
-                    if (dialog == JOptionPane.YES_OPTION) {
-                        // Close the game.
-                        System.exit(0);
-                    }
+                   quitGame();
                     // If the user presses the menu button
                 } else if (button.getText().equalsIgnoreCase("Return To Menu")) {
                     // Remove the pause panel.
@@ -1701,6 +1688,23 @@ public class DungeonTales extends JFrame {
 
         //Platform in center of screen that
         Platform Plat3 = new Platform(800, 600, 1300, 600, 300, 30, two, 3, 2);
+    }
+
+    public static void quitGame(){
+        // Create variables to catch the result of the confirmation
+        // dialog.
+        int result = 0;
+        // Display a confirmation dialog confirmed the player would
+        // like to quit the game.
+        int dialog = JOptionPane
+                .showConfirmDialog(null,
+                        "Are you sure you want to quit?",
+                        "Warning", result);
+        // If the user does want to quit the game
+        if (dialog == JOptionPane.YES_OPTION) {
+            // Close the game.
+            System.exit(0);
+        }
     }
 
     public static void main(String[] args) throws IOException {

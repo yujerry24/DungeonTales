@@ -1718,8 +1718,6 @@ public class DungeonTales extends JFrame {
             buttonT.addActionListener(al);
             buttonT.addMouseListener(ml);
 
-            button2.setLocation(100, 100);
-            button2.setPreferredSize(dimB);
             button2.setContentAreaFilled(false);
             button2.setBorderPainted(false);
             button2.setFocusable(false);
@@ -1739,8 +1737,6 @@ public class DungeonTales extends JFrame {
             button2.addActionListener(al);
             button2.addMouseListener(ml);
 
-            button3.setLocation(100, 100);
-            button3.setPreferredSize(dimB);
             button3.setContentAreaFilled(false);
             button3.setBorderPainted(false);
             button3.setForeground(Color.white);
@@ -1760,8 +1756,6 @@ public class DungeonTales extends JFrame {
             button3.addActionListener(al);
             button3.addMouseListener(ml);
 
-            button4.setLocation(100, 100);
-            button4.setPreferredSize(dimB);
             button4.setContentAreaFilled(false);
             button4.setBorderPainted(false);
             button4.setForeground(Color.white);
@@ -1781,8 +1775,6 @@ public class DungeonTales extends JFrame {
             button4.addActionListener(al);
             button4.addMouseListener(ml);
 
-            instructions.setLocation(100, 100);
-            instructions.setPreferredSize(dimB);
             instructions.setContentAreaFilled(false);
             instructions.setBorderPainted(false);
             instructions.setForeground(Color.white);
@@ -1793,8 +1785,6 @@ public class DungeonTales extends JFrame {
             instructions.addActionListener(al);
             instructions.addMouseListener(ml);
 
-            quit.setLocation(100, 100);
-            quit.setPreferredSize(dimB);
             quit.setContentAreaFilled(false);
             quit.setBorderPainted(false);
             quit.setForeground(Color.white);
@@ -1805,8 +1795,6 @@ public class DungeonTales extends JFrame {
             quit.addActionListener(al);
             quit.addMouseListener(ml);
 
-            credits.setLocation(100, 100);
-            credits.setPreferredSize(dimB);
             credits.setContentAreaFilled(false);
             credits.setBorderPainted(false);
             credits.setForeground(Color.white);

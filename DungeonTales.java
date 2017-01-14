@@ -1456,13 +1456,24 @@ public class DungeonTales extends JFrame {
 
             addKeyListener(kl);
 
-            JLabel jlabel = new JLabel("Sound Credits");
-            jlabel.setFont(new Font("Verdana", 1, 20));
-            panel5.add(jlabel);
+            panel5.setLayout(null);
+   
+            panel5.setBackground (Color.lightGray);
+   
+           JLabel creditsTitle = new JLabel ("CREDITS");
+           creditsTitle.setFont (new Font ("TimesRoman", Font.BOLD+Font.ITALIC, 80));
+           creditsTitle.setBounds (SCREEN_WIDTH / 2 - 500 , 150, SCREEN_WIDTH - 500, 100); 
+           panel5.add(creditsTitle);
 
-            JLabel label2 = new JLabel("https://www.youtube.com/user/gamingsoundfx");
-            label2.setFont(new Font("Verdana", 1, 20));
-            panel5.add(label2);
+            JLabel creditsInfo = new JLabel("<html>Sound Credits:<br>https://www.youtube.com/user/gamingsoundfx<br><br>" +
+                                   "Knight Image Credits: <br> https://www.google.ca/search?q=knight+image+cartoon&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjXrZOAuL...<br><br>" +
+                                   "Door Image Credits: <br> http://cliparts.co/cartoon-door <br><br> Dungeon Background Image Credits: <br> " +
+                                   "http://steamtradingcards.wikia.com/wiki/File:Darkest_Dungeon_Background_The_Ruins.jpg<br><br>" +
+                                   "Spikes Image Credits: <br> http://sonic.wikia.com/wiki/Spikes_(obstacle)</center><htlm>");
+   
+           creditsInfo.setFont (new Font ("TimesRoman", Font.BOLD, 18));
+           creditsInfo.setBounds (SCREEN_WIDTH / 2 - 500 , 0, SCREEN_WIDTH - 500, SCREEN_HEIGHT); 
+           panel5.add(creditsInfo);
 
 
             ActionListener al = new ActionListener() {

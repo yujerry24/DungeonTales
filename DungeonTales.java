@@ -1490,7 +1490,6 @@ public class DungeonTales extends JFrame {
             back.setFocusable(false);
             back.setFont(new Font(back.getFont().getName(), Font.PLAIN, 25));
             back.setBounds(SCREEN_WIDTH / 2 - 500 , 0, SCREEN_WIDTH - 900, SCREEN_HEIGHT + 700);
-            back.addMouseListener(ml);
             panel5.add(back);
 
 

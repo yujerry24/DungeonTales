@@ -1484,6 +1484,16 @@ public class DungeonTales extends JFrame {
             panel5.add(label2);
 
 
+            JButton back = new JButton("Main Menu");
+            back.setContentAreaFilled(false);
+            back.setBorderPainted(false);
+            back.setFocusable(false);
+            back.setFont(new Font(back.getFont().getName(), Font.PLAIN, 25));
+            back.setBounds(SCREEN_WIDTH / 2 - 500 , 0, SCREEN_WIDTH - 900, SCREEN_HEIGHT + 700);
+            back.addMouseListener(ml);
+            panel5.add(back);
+
+
             ActionListener al = new ActionListener() {
 
                 public void actionPerformed(ActionEvent event) {
@@ -1494,6 +1504,13 @@ public class DungeonTales extends JFrame {
                     }
 
                     JButton button = (JButton) event.getSource();
+
+                    if(button.getText().equalsIgnoreCase("Main Menu")){
+                        tales.setContentPane(new MainMenu());
+                        tales.validate();
+                        return;
+                    }
+
                     if (button == buttonT) {
                         if (tutorial == null) {
                             System.out.println("[ERROR] Unable to load level.");
@@ -1591,6 +1608,8 @@ public class DungeonTales extends JFrame {
 
                 }
             };
+
+            back.addActionListener(al);
 
             FlowLayout flow = new FlowLayout();
             this.setLayout(flow);

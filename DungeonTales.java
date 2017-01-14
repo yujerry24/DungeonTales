@@ -1811,21 +1811,23 @@ public class DungeonTales extends JFrame {
         Platform tPlat1 = new Platform(1250, 650, 1250, 1030, 90, 30, tutorial,
                 1, 2);
 
-        // Level 1
+         // Level 1
         Rectangle[] spikesOne = {new Rectangle(400, 275, 120, 25), new Rectangle(510, 275, 120, 25), new Rectangle(620, 275, 120, 25), new Rectangle(730, 275, 120, 25),
                 new Rectangle(SCREEN_WIDTH - 120, 670, 120, 30),
-                new Rectangle(700, 730, 120, 30), new Rectangle(810, 730, 120, 30), new Rectangle(920, 730, 120, 30), new Rectangle(1030, 730, 120, 30), new Rectangle(1140, 730, 150, 30),};
-        Rectangle[] onePlats = {new Rectangle(0, 300, 1000, 30),
+                new Rectangle(700, 730, 120, 30), new Rectangle(810, 730, 120, 30), new Rectangle(920, 730, 120, 30), new Rectangle(1030, 730, 120, 30), new Rectangle(1140, 730, 150, 30),
+        new Rectangle (SCREEN_WIDTH - 620, 670, 120, 30)};
+        Rectangle[] onePlats = {new Rectangle(0, 300, 850, 30),
                 new Rectangle(1250, 300, 500, 30),
                 new Rectangle(200, 700, 500, 30),
                 new Rectangle(1300, 700, 750, 30),
                 new Rectangle(700, 760, 600, 30)};
         Level one = new Level(1, 20, 20, SCREEN_WIDTH - 300, SCREEN_HEIGHT
-                - GROUND_WIDTH - 50, p, onePlats, 3, spikesOne);
-        Platform lPlat2 = new Platform(SCREEN_WIDTH - 120, 100,
-                SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 2);
-        Platform lPlat3 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
-        Platform lPlat4 = new Platform(600, 600, 1300, 600, 300, 30, one, 3, 2);
+                - GROUND_WIDTH - 50, p, onePlats, 4, spikesOne);
+        Platform lPlat1 = new Platform(SCREEN_WIDTH - 120, 100,
+                SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 3);
+        Platform lPlat2 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
+        Platform lPlat3 = new Platform(700, 600, 950, 600, 60, 30, one, 3, 4);
+        Platform lPlat4 = new Platform (1050, 600, 1600, 600, 90, 30, one, 4, 6);
 
         // Level 2
         Rectangle[] spikesTwo = {new Rectangle(370, 270, 120, 30), new Rectangle(480, 270, 120, 30), new Rectangle(590, 270, 120, 30), new Rectangle(700, 270, 120, 30), new Rectangle(810, 270, 120, 30), new Rectangle(920, 270, 120, 30)};

@@ -610,9 +610,14 @@ public class DungeonTales extends JFrame {
 
                 if (middlePlayer.intersects(door)) {
                     p.getCurrentLevel().getGameTimer().pauseTime();
-                    JOptionPane.showMessageDialog(p.getCurrentLevel(),
-                            "You've completed level "
-                                    + p.getCurrentLevel().getLevel() + " in " + p.getCurrentLevel().getGameTimer().getTime() + " seconds!");
+                    if(p.getCurrentLevel().getLevel() == 4){
+                        JOptionPane.showMessageDialog(p.getCurrentLevel(),
+                                "You've completed the tutorial in " + p.getCurrentLevel().getGameTimer().getTime() + " seconds!");
+                    }else {
+                        JOptionPane.showMessageDialog(p.getCurrentLevel(),
+                                "You've completed level "
+                                        + p.getCurrentLevel().getLevel() + " in " + p.getCurrentLevel().getGameTimer().getTime() + " seconds!");
+                    }
                     tales.remove(p.getCurrentLevel());
                     p.getCurrentLevel().getGameTimer().resetTime();
                     tales.setContentPane(new MainMenu());
@@ -740,7 +745,7 @@ public class DungeonTales extends JFrame {
 
                         // Create a rectangle out of the platform object.
                         Rectangle r = new Rectangle(plat.getX(), plat.getY(),
-                                plat.width, plat.height);
+                                plat.width, 10);
 
                         // Check if the players rectangle is intersecting with a
                         // platform.

@@ -1536,15 +1536,6 @@ public class DungeonTales extends JFrame {
             creditsInfo.setBounds(SCREEN_WIDTH / 2 - 500, 0, SCREEN_WIDTH - 500, SCREEN_HEIGHT);
             panel5.add(creditsInfo);
 
-            JLabel jlabel = new JLabel("Sound Credits");
-            jlabel.setFont(new Font("Verdana", 1, 20));
-            panel5.add(jlabel);
-
-            JLabel label2 = new JLabel("https://www.youtube.com/user/gamingsoundfx");
-            label2.setFont(new Font("Verdana", 1, 20));
-            panel5.add(label2);
-
-
             JButton back = new JButton("Main Menu");
             back.setContentAreaFilled(false);
             back.setBorderPainted(false);

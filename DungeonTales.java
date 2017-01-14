@@ -618,6 +618,7 @@ public class DungeonTales extends JFrame {
                                 "You've completed level "
                                         + p.getCurrentLevel().getLevel() + " in " + p.getCurrentLevel().getGameTimer().getTime() + " seconds!");
                     }
+                    p.setCanMove(false);
                     tales.remove(p.getCurrentLevel());
                     p.getCurrentLevel().getGameTimer().resetTime();
                     tales.setContentPane(new MainMenu());
@@ -1521,6 +1522,7 @@ public class DungeonTales extends JFrame {
                         p.setY(p.getCurrentLevel().getSpawnY());
                         p.getCurrentLevel().getGameTimer().resumeTime();
                         p.canPause = true;
+                        p.setCanMove(true);
                         p.getCurrentLevel().setLayout(null);
                         try {
                             stopMusicFile();
@@ -1570,6 +1572,9 @@ public class DungeonTales extends JFrame {
             button2.setForeground(Color.white);
             button2.setFont(new Font(button2.getFont().getName(), Font.PLAIN,
                     30));
+            if(!one.isCompleted()){
+                button2.setForeground(Color.red);
+            }
             add(button2);
             button2.addActionListener(al);
             button2.addMouseListener(ml);
@@ -1582,6 +1587,9 @@ public class DungeonTales extends JFrame {
             button3.setFocusable(false);
             button3.setFont(new Font(button3.getFont().getName(), Font.PLAIN,
                     30));
+            if(!two.isCompleted()){
+                button3.setForeground(Color.red);
+            }
             add(button3);
             button3.addActionListener(al);
             button3.addMouseListener(ml);
@@ -1594,6 +1602,9 @@ public class DungeonTales extends JFrame {
             button4.setFocusable(false);
             button4.setFont(new Font(button4.getFont().getName(), Font.PLAIN,
                     30));
+            if(!three.isCompleted()){
+                button4.setForeground(Color.red);
+            }
             add(button4);
             button4.addActionListener(al);
             button4.addMouseListener(ml);
@@ -1693,6 +1704,14 @@ public class DungeonTales extends JFrame {
 
         //Platform in center of screen that
         Platform Plat3 = new Platform(800, 600, 1300, 600, 300, 30, two, 3, 2);
+
+        // Level 3
+        Rectangle[] spikesThree = {new Rectangle(370, 270, 120, 30), new Rectangle(480, 270, 120, 30), new Rectangle(590, 270, 120, 30), new Rectangle(700, 270, 120, 30), new Rectangle(810, 270, 120, 30), new Rectangle(920, 270, 120, 30)};
+        Rectangle[] threePlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
+                new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
+                new Rectangle(200, 890, 1400, 30)};
+        Level three = new Level(3, 40, 150, 100, 425, p, threePlats, 0, spikesThree);
+
     }
 
     public static void quitGame(){

@@ -1403,10 +1403,30 @@ public class DungeonTales extends JFrame {
 
             if (button.getText().equalsIgnoreCase("Quit")) {
                 button.setForeground(Color.red);
-            } else {
+                return;
+            } else if(button.getText().indexOf("Level") != -1){
+                Level tutorial = LevelManager.getLevel(4);
+                Level one = LevelManager.getLevel(1);
+                Level two = LevelManager.getLevel(2);
+
+                if(button.getText().indexOf("1") != -1){
+                    if(!tutorial.isCompleted()){
+                        return;
+                    }
+                }else if(button.getText().indexOf("2") != -1){
+                    if(!one.isCompleted()){
+                        return;
+                    }
+                }else if(button.getText().indexOf("3") != -1){
+                    if(!two.isCompleted()){
+                        return;
+                    }
+                }
+
+            }
+
                 // Set the colour of the button to green.
                 button.setForeground(Color.green);
-            }
 
         }
 
@@ -1419,6 +1439,31 @@ public class DungeonTales extends JFrame {
 
             // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
+
+            if(button.getText().indexOf("Level") != -1){
+                Level tutorial = LevelManager.getLevel(4);
+                Level one = LevelManager.getLevel(1);
+                Level two = LevelManager.getLevel(2);
+                Level three = LevelManager.getLevel(3);
+
+                if(button.getText().indexOf("1") != -1){
+                    if(!one.isCompleted()){
+                        button.setForeground(Color.red);
+                        return;
+                    }
+                }else if(button.getText().indexOf("2") != -1){
+                    if(!two.isCompleted()){
+                        button.setForeground(Color.red);
+                        return;
+                    }
+                }else if(button.getText().indexOf("3") != -1){
+                    if(!three.isCompleted()){
+                        button.setForeground(Color.red);
+                        return;
+                    }
+                }
+
+            }
 
             // Set the colour of the button to white.
             button.setForeground(Color.white);
@@ -1475,6 +1520,15 @@ public class DungeonTales extends JFrame {
             creditsInfo.setBounds (SCREEN_WIDTH / 2 - 500 , 0, SCREEN_WIDTH - 500, SCREEN_HEIGHT);
             panel5.add(creditsInfo);
 
+            JLabel jlabel = new JLabel("Sound Credits");
+            jlabel.setFont(new Font("Verdana", 1, 20));
+            panel5.add(jlabel);
+
+            JLabel label2 = new JLabel("https://www.youtube.com/user/gamingsoundfx");
+            label2.setFont(new Font("Verdana", 1, 20));
+            panel5.add(label2);
+
+
             JButton back = new JButton("Main Menu");
             back.setContentAreaFilled(false);
             back.setBorderPainted(false);
@@ -1494,6 +1548,30 @@ public class DungeonTales extends JFrame {
                     }
 
                     JButton button = (JButton) event.getSource();
+
+                    if(button.getText().indexOf("Level") != -1){
+                        Level tutorial = LevelManager.getLevel(4);
+                        Level one = LevelManager.getLevel(1);
+                        Level two = LevelManager.getLevel(2);
+
+                        if(button.getText().indexOf("1") != -1){
+                            if(!tutorial.isCompleted()){
+                                JOptionPane.showMessageDialog(menu, "You have not unlocked this level yet!", "Uh oh!", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                        }else if(button.getText().indexOf("2") != -1){
+                            if(!one.isCompleted()){
+                                JOptionPane.showMessageDialog(menu, "You have not unlocked this level yet!", "Uh oh!", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                        }else if(button.getText().indexOf("3") != -1){
+                            if(!two.isCompleted()){
+                                JOptionPane.showMessageDialog(menu, "You have not unlocked this level yet!", "Uh oh!", JOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
+                        }
+
+                    }
 
                     if(button.getText().equalsIgnoreCase("Main Menu")){
                         tales.setContentPane(new MainMenu());

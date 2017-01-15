@@ -900,7 +900,7 @@ public class DungeonTales extends JFrame {
     }
 
     // Create a new key listener to listen for key events.
-    static KeyListener kl = new KeyListener() {
+     static KeyListener kl = new KeyListener() {
 
         public void keyTyped(KeyEvent arg0) {
 
@@ -936,13 +936,6 @@ public class DungeonTales extends JFrame {
             // If the player pressed escape, pause the game.
             if (key == KeyEvent.VK_ESCAPE) {
                 if (atInstructions) {
-
-                    for (Component c : menu.getComponents()) {
-                        if (c instanceof JButton) {
-                            JButton button = (JButton) c;
-                            button.setForeground(Color.white);
-                        }
-                    }
                     atInstructions = false;
                     tales.setContentPane(menu);
                     tales.validate();

@@ -1450,6 +1450,12 @@ public class DungeonTales extends JFrame {
                 Level two = LevelManager.getLevel(2);
                 Level three = LevelManager.getLevel(3);
 
+                                if(button.getText().indexOf("Tutorial") == -1){
+                    if(!tutorial.isCompleted()){
+                        button.setForeground(Color.white);
+                    }
+                }
+                
                 if (button.getText().indexOf("1") != -1) {
                     if (!tutorial.isCompleted()) {
                         button.setForeground(Color.red);

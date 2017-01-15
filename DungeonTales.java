@@ -18,6 +18,7 @@ public class DungeonTales extends JFrame {
 
     // [Boolean variables]
     static boolean doGravity = true;
+    static boolean atInstructions = false;
     // [-----------------]
 
     // [Timer variables]
@@ -655,6 +656,7 @@ public class DungeonTales extends JFrame {
                     p.getCurrentLevel().getGameTimer().resetTime();
                     p.getCurrentLevel().setCompleted(true);
                     tales.setContentPane(new MainMenu());
+                    p.canPause = false;
                     tales.validate();
                     pressed[0] = 0;
                     try {
@@ -933,18 +935,25 @@ public class DungeonTales extends JFrame {
 
             // If the player pressed escape, pause the game.
             if (key == KeyEvent.VK_ESCAPE) {
+                System.out.println(atInstructions);
+                if (atInstructions) {
+                    System.out.println("Zach is weird");
+
+                    for (Component c : menu.getComponents()) {
+                        if (c instanceof JButton) {
+                            JButton button = (JButton) c;
+                            button.setForeground(Color.white);
+                        }
+                    }
+                    atInstructions = false;
+                    tales.setContentPane(menu);
+                    tales.validate();
+
+                    return;
+                }
                 // Make sure that the player is on a level, so they cannot pause
                 // at the menu screen.
-                if (menu.isVisible() || !p.canPause) {
-                    if (menu.isVisible()) {
-                        for (Component c : menu.getComponents()) {
-                            if (c instanceof JButton) {
-                                JButton button = (JButton) c;
-                                button.setForeground(Color.white);
-                            }
-                        }
-                        tales.setContentPane(menu);
-                    }
+                if (!p.canPause) {
                     return;
                 }
 
@@ -1078,7 +1087,7 @@ public class DungeonTales extends JFrame {
                             }
                         }
 
-                        for(Platform plat : p.getCurrentLevel().getMovingPlats()){
+                        for (Platform plat : p.getCurrentLevel().getMovingPlats()) {
                             plat.hasPlayer(false);
                         }
 
@@ -1138,6 +1147,8 @@ public class DungeonTales extends JFrame {
             setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
             // Repaint the screen
             repaint();
+
+            addKeyListener(kl);
 
             // Create instruction JLabels.
             // Header label for instructions panel.
@@ -1235,6 +1246,8 @@ public class DungeonTales extends JFrame {
                     }
                     // Set the game to be no longer paused.
                     p.setPaused(false);
+                    // Disable pausing
+                    p.canPause = false;
                     // Reset the time of the current level they were on.
                     p.getCurrentLevel().getGameTimer().resetTime();
                     // Set the JFrame to display the main menu.
@@ -1450,37 +1463,37 @@ public class DungeonTales extends JFrame {
                 Level two = LevelManager.getLevel(2);
                 Level three = LevelManager.getLevel(3);
 
-                                if(button.getText().indexOf("Tutorial") == -1){
-                    if(!tutorial.isCompleted()){
-                        button.setForeground(Color.white);
-                    }
-                }
-                
                 if (button.getText().indexOf("1") != -1) {
                     if (!tutorial.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
-                    } else if(one.isCompleted()) {
+                    } else if (one.isCompleted()) {
                         button.setForeground(Color.green);
-                    }else{
+                    } else {
                         button.setForeground(Color.white);
                     }
                 } else if (button.getText().indexOf("2") != -1) {
                     if (!one.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
-                    } else if(two.isCompleted()) {
+                    } else if (two.isCompleted()) {
                         button.setForeground(Color.green);
-                    }else{
+                    } else {
                         button.setForeground(Color.white);
                     }
                 } else if (button.getText().indexOf("3") != -1) {
                     if (!two.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
-                    } else if(three.isCompleted()) {
+                    } else if (three.isCompleted()) {
                         button.setForeground(Color.green);
-                    }else{
+                    } else {
+                        button.setForeground(Color.white);
+                    }
+                }
+
+                if (button.getText().equalsIgnoreCase("Tutorial")) {
+                    if (!tutorial.isCompleted()) {
                         button.setForeground(Color.white);
                     }
                 }
@@ -1489,6 +1502,7 @@ public class DungeonTales extends JFrame {
                 // Set the colour of the button to white.
                 button.setForeground(Color.white);
             }
+
 
         }
     };
@@ -1608,6 +1622,7 @@ public class DungeonTales extends JFrame {
                         System.exit(0);
                     } else if (button == instructions) {
                         button.setForeground(Color.white);
+                        atInstructions = true;
                         tales.setContentPane(new Instructions());
                         tales.validate();
                     } else if (button == credits) {
@@ -1839,7 +1854,7 @@ public class DungeonTales extends JFrame {
         Rectangle[] spikesOne = {new Rectangle(400, 275, 120, 25), new Rectangle(510, 275, 120, 25), new Rectangle(620, 275, 120, 25), new Rectangle(730, 275, 120, 25),
                 new Rectangle(SCREEN_WIDTH - 120, 670, 120, 30),
                 new Rectangle(700, 730, 120, 30), new Rectangle(810, 730, 120, 30), new Rectangle(920, 730, 120, 30), new Rectangle(1030, 730, 120, 30), new Rectangle(1140, 730, 150, 30),
-                new Rectangle (SCREEN_WIDTH - 620, 670, 120, 30)};
+                new Rectangle(SCREEN_WIDTH - 620, 670, 120, 30)};
         Rectangle[] onePlats = {new Rectangle(0, 300, 850, 30),
                 new Rectangle(1250, 300, 500, 30),
                 new Rectangle(200, 700, 500, 30),
@@ -1851,10 +1866,10 @@ public class DungeonTales extends JFrame {
                 SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 3);
         Platform lPlat2 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
         Platform lPlat3 = new Platform(700, 600, 950, 600, 60, 30, one, 3, 4);
-        Platform lPlat4 = new Platform (1050, 600, 1600, 600, 90, 30, one, 4, 6);
+        Platform lPlat4 = new Platform(1050, 600, 1600, 600, 90, 30, one, 4, 6);
         // Level 2
         Rectangle[] spikesTwo = {new Rectangle(370, 270, 120, 30), new Rectangle(480, 270, 120, 30), new Rectangle(590, 270, 120, 30), new Rectangle(700, 270, 120, 30), new Rectangle(810, 270, 120, 30), new Rectangle(920, 270, 120, 30)
-                                 , new Rectangle(1200, 270, 120, 30) , new Rectangle(1286, 270, 120, 30),  new Rectangle(1396, 270, 120, 30) ,  new Rectangle(1506, 270, 120, 30)};
+                , new Rectangle(1200, 270, 120, 30), new Rectangle(1286, 270, 120, 30), new Rectangle(1396, 270, 120, 30), new Rectangle(1506, 270, 120, 30)};
         Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
                 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
                 new Rectangle(200, 890, 1400, 30)};
@@ -1862,7 +1877,7 @@ public class DungeonTales extends JFrame {
 
         //First platform in level that moves left to right
         Platform Plat1 = new Platform(350, 175, 1050, 175, 90, 30, two, 2, 3);
-        
+
         //First platform in level that moves left to right
         Platform Plat4 = new Platform(1250, 175, 1650, 175, 90, 30, two, 4, 3);
 

@@ -935,9 +935,7 @@ public class DungeonTales extends JFrame {
 
             // If the player pressed escape, pause the game.
             if (key == KeyEvent.VK_ESCAPE) {
-                System.out.println(atInstructions);
                 if (atInstructions) {
-                    System.out.println("Zach is weird");
 
                     for (Component c : menu.getComponents()) {
                         if (c instanceof JButton) {

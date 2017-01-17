@@ -170,7 +170,9 @@ public class DungeonTales extends JFrame {
 
     }
 
+    // Class for the moving platforms
     static class Platform {
+        // Moving platform variables
         private int startX = 0;
         private int startY = 0;
         private int endX;
@@ -185,8 +187,10 @@ public class DungeonTales extends JFrame {
         private boolean back;
         private boolean hasPlayer = false;
 
+        // Constructor for moving platforms
         public Platform(int startX, int startY, int endX, int endY, int width,
                         int height, Level level, int id, int speed) {
+            // Initialize all the variables
             this.startX = startX;
             this.startY = startY;
             this.speed = speed;
@@ -201,85 +205,105 @@ public class DungeonTales extends JFrame {
             this.level.addPlatform(id, this);
         }
 
+        // Method to set the X location of the platform
         public void setX(int x) {
             this.x = x;
         }
 
+        // Method to set the Y location of the platform
         public void setY(int y) {
             this.y = y;
         }
 
+        // Method to return the X location of the platform
         public int getX() {
             return this.x;
         }
 
+        // Method to return the Y location of the platform
         public int getY() {
             return this.y;
         }
 
+        // Method to return the speed of the platform
         public int getSpeed() {
             return this.speed;
         }
 
+        // Method to check if the platform has the player on it
         public boolean hasPlayer() {
             return this.hasPlayer;
         }
 
+        // Method to set if the player is on the platform
         public void hasPlayer(boolean yes) {
             this.hasPlayer = yes;
         }
 
+        // Method to check if the platform is on it's way back
         public boolean getBack() {
             return this.back;
         }
 
+        // Method to set the platform to it's way back
         public void setBack(boolean back) {
             this.back = back;
         }
 
     }
 
+    // Game timer class
     static class GameTimer {
+        // Game timer variables
         private Timer timer;
         private int time;
         private ActionListener al;
         private Level level;
 
+        // Constructor for game timer
         public GameTimer(Level level) {
             this.level = level;
             this.time = 0;
+            // Create an action listener to increment the time variable
             al = new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     time++;
                 }
             };
+            // Create a timer to run every second
             this.timer = new Timer(1000, al);
         }
 
+        // Method to pause the timer
         public void pauseTime() {
             this.timer.stop();
         }
 
+        // Method to resume/start the timer
         public void resumeTime() {
             this.timer.start();
         }
 
+        // Method to return the time
         public int getTime() {
             return this.time;
         }
 
+        // Method to set the time
         public void setTime(int time) {
             this.time = time;
         }
 
+        // Method to reset the time
         public void resetTime() {
             this.time = 0;
         }
 
     }
 
+    // Level class
     static class Level extends JPanel {
-
+        // Level object variables
         private int level;
         private int spawnX, spawnY, endX, endY;
         private Player p;
@@ -293,51 +317,59 @@ public class DungeonTales extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            g.drawImage(platformImage, 0, SCREEN_HEIGHT - GROUND_WIDTH,
-                    SCREEN_WIDTH, GROUND_WIDTH, null);
-            g.setColor(new Color(93, 100, 112));
-            g.fillRect(0, SCREEN_HEIGHT - GROUND_WIDTH, SCREEN_WIDTH,
-                    GROUND_WIDTH);
+            // Draw the background image
             g.drawImage(menuBack, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, null);
+            // Draw the door at the end position of the level
             g.drawImage(door, endX, endY, 187, 187, null);
 
+            // Loop through each platform in the level (non-moving)
             for (Rectangle r : getPlatforms()) {
 
+                // Make sure the platform isn't null
                 if (r == null) {
                     return;
                 }
 
+                // Draw the platform image
                 g.drawImage(platformImage, (int) r.getBounds().getMinX(),
                         (int) r.getBounds().getMinY(), (int) r.getWidth(),
                         (int) r.getHeight(), null);
             }
 
+            // Loop through all the spikes in the level
             for (Rectangle s : getSpikes()) {
+                // Draw the spike image
                 g.drawImage(spikeImage, (int) s.getBounds().getMinX(), (int) s
                         .getBounds().getMinY(), (int) s.getWidth(), (int) s
                         .getHeight(), null);
             }
 
+            // Loop through all the moving platforms in the level
             for (Platform p : getMovingPlats()) {
 
+                // Make sure it's not null
                 if (p == null) {
                     return;
                 }
 
-                // g.fillRect(p.getX(), p.getY(), p.width, p.height);
+                // Draw the moving platform image
                 g.drawImage(platformImage, (int) p.getX(), (int) p.getY(),
                         p.width, p.height, null);
             }
 
+            // Check to see if the player is visible
             if (p.isVisible()) {
+                // If the player is, then draw the player at their X & Y
                 g.drawImage(knight, p.getX(), p.getY(), 150, 125, null);
             }
 
         }
 
+        // Constructor for the level object
         public Level(int level, int spawnX, int spawnY, int endX, int endY,
                      final Player p, Rectangle[] platforms, int movingPlats,
                      Rectangle[] spikes) {
+            // Declare all the variables
             this.level = level;
             this.spawnX = spawnX;
             this.spawnY = spawnY;
@@ -345,130 +377,200 @@ public class DungeonTales extends JFrame {
             this.endY = endY;
             this.p = p;
             this.spikes = spikes;
+            // Create a new instance of a game timer for this level
             gt = new GameTimer(this);
 
+            // Set the players X & Y to those of the levels spawn location
             p.setX(spawnX);
             p.setY(spawnY);
+            // Set the player visible
             p.setVisible(true);
             this.platforms = platforms;
             this.movingPlats = new Platform[movingPlats];
+            // Add the level to an array
             LevelManager.levels[level - 1] = this;
 
+            // Set the layout to null for formatting
             setLayout(null);
 
+            // Create a new JLabel to display the timer on the screen
             time = new JLabel("<html><b>Time: " + this.getGameTimer().getTime()
                     + "s</b></html>");
-            time.setBounds(SCREEN_WIDTH - 150, 0, 200, 100);
+            // Set the location and bounds of the timer
+            time.setBounds(SCREEN_WIDTH - 200, 0, 200, 100);
 
+            // Add the time JLabel to the level
             add(time);
 
+            // If the level is the tutorial
             if (level == 4) {
-                setLayout(null);
                 // Create the tutorial messages
+                // Create the moving tip.
                 JLabel moveTip = new JLabel(
                         "<html><b>TIP:</b><br>Use the arrow keys<br>to navigate the level!</html>");
+                // Set the location
                 moveTip.setBounds(getSpawnX() + 20, getSpawnY() - 160, 300, 100);
+                // Set the font colour
                 moveTip.setForeground(Color.white);
+                // Set the font size
                 moveTip.setFont(new Font(moveTip.getFont().getName(),
                         Font.ITALIC, 20));
+                // Add it to the panel
                 add(moveTip);
 
+                // Create the door tip
                 JLabel doorTip = new JLabel(
                         "<html><b>TIP:</b><br>Reach these doors<br>to complete the level!</html>");
+                // Set the location
                 doorTip.setBounds(getEndX() + 20, getSpawnY() - 180, 300, 100);
+                // Set the font colour
                 doorTip.setForeground(Color.white);
+                // Set the font size
                 doorTip.setFont(new Font(doorTip.getFont().getName(),
                         Font.ITALIC, 20));
+                // Add it to the panel
                 add(doorTip);
 
+                // Create the platform tip
                 JLabel platTip = new JLabel(
                         "<html><b>TIP:</b><br>Jump on these platforms<br>to reach higher parts!</html>");
+                // Set the location
                 platTip.setBounds(SCREEN_WIDTH / 2 - 570, getSpawnY() - 200,
                         300, 100);
+                // Set the font colour
                 platTip.setForeground(Color.white);
+                // Set the font size
                 platTip.setFont(new Font(platTip.getFont().getName(),
                         Font.ITALIC, 20));
+                // Add it to the panel
                 add(platTip);
 
+                // Create the spike tip
                 JLabel spikeTip = new JLabel(
                         "<html><b>TIP:</b><br>Avoid touching these<br>spikes or you'll respawn!</html>");
+                // Set the location
                 spikeTip.setBounds(SCREEN_WIDTH / 2 - 270, getSpawnY() - 400,
                         300, 100);
+                // Set the font colour
                 spikeTip.setForeground(Color.white);
+                // Set the font size
                 spikeTip.setFont(new Font(spikeTip.getFont().getName(),
                         Font.ITALIC, 20));
+                // Add it to the panel
                 add(spikeTip);
 
+                // Create the moving platform tip
                 JLabel movingPlatTip = new JLabel(
                         "<html><b>TIP:</b><br>These platforms move, side to<br>side, and up and down.<br>use them to reach platforms!</html>");
+                // Set the location
                 movingPlatTip.setBounds(SCREEN_WIDTH / 2, getSpawnY() - 300,
                         300, 100);
+                // Set the font colour
                 movingPlatTip.setForeground(Color.white);
+                // Set the size
                 movingPlatTip.setFont(new Font(movingPlatTip.getFont()
                         .getName(), Font.ITALIC, 20));
+                // Add it to the panel
                 add(movingPlatTip);
             }
 
+            // Create an action listener to repaint the updated time and platforms
             ActionListener al = new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
-
+                    // Set the text of the JLabel
                     time.setText("<html><b>Time: " + getGameTimer().getTime()
                             + "s</b></html>");
+                    // Set the font colour
                     time.setForeground(Color.WHITE);
+                    // Set the font size
                     time.setFont(new Font(time.getFont().getName(), Font.PLAIN,
                             27));
 
+                    // Repaint the screen with updated time
                     repaint();
+                    // Check to see if the player is paused
                     if (p.isPaused()) {
                         return;
                     }
+
+                    // Loop through each moving platform in the level
                     for (Platform p : getMovingPlats()) {
 
+                        // Make sure the platform is not null
                         if (p == null) {
                             return;
                         }
 
+                        // Create an instance of the player
                         Player pl = DungeonTales.p;
 
+                        // Check to see if the platform has a horizontal animation/movement
                         if (p.startX != p.endX) {
+                            // Check to see if the current X location is equal to the end location,
+                            // or if the platform is going back
                             if (p.getX() >= p.endX - p.width || p.getBack()) {
+                                // Move the platform to the left
                                 p.setX(p.getX() - p.getSpeed());
+                                // Set the direction of the platform
                                 p.setBack(true);
+                                // Check to see if the platform is back at it's start location
                                 if (p.getX() == p.startX) {
+                                    // Set the direction again
                                     p.setBack(false);
                                 }
                             } else {
+                                // Otherwise move it in the right direction
                                 p.setX(p.getX() + p.getSpeed());
                             }
                         }
 
+                        // Check to see if there is animation/movement on the Y axis
                         if (p.startY != p.endY) {
+                            // Check to see if the platform is at the end of it's path
                             if (p.getY() >= p.endY - p.width || p.getBack()) {
+                                // Move the platform up the screen
                                 p.setY(p.getY() - p.getSpeed());
+                                // Set the platforms direction
                                 p.setBack(true);
+                                // Check if the platform has reached it's starting position
                                 if (p.getY() == p.startY) {
+                                    // Set the direction of the platform
                                     p.setBack(false);
+                                    // Check if the platform has the player on it
                                     if (p.hasPlayer()) {
+                                        // Move the player up the screen a small amount.
+                                        // This is to prevent the player from gradually falling
+                                        // through the platform
                                         pl.setY(pl.getY() - 5);
                                     }
                                 }
                             } else {
+                                // Else move the platform down the screen
                                 p.setY(p.getY() + p.getSpeed());
                             }
                         }
 
+                        // Check to see if the player is on top of that platform
                         if (p.hasPlayer()) {
+                            // Check if the platform has horizontal animation
                             if (p.startX != p.endX) {
+                                // Check the direction of the platform
                                 if (p.getBack()) {
+                                    // Move the player with the platform
                                     pl.setX(pl.getX() - p.getSpeed());
                                 } else {
+                                    // Move the player with the platform (other direction)
                                     pl.setX(pl.getX() + p.getSpeed());
                                 }
                             }
+                            // Check if the platform has verticle animation
                             if (p.startY != p.endY) {
+                                // Check the direction of the platform
                                 if (p.getBack()) {
+                                    // Move the player with the platform
                                     pl.setY(pl.getY() - p.getSpeed());
                                 } else {
+                                    // Move the player with the platform (other direction)
                                     pl.setY(pl.getY() + p.getSpeed());
                                 }
                             }
@@ -477,42 +579,58 @@ public class DungeonTales extends JFrame {
                 }
             };
 
+            // Create a timer to loop the action listener, and update the platforms etc
             Timer timer = new Timer(10, al);
+            // Start the timer.
             timer.start();
         }
 
+        // Method to get the spawn X of the level
         public int getSpawnX() {
             return this.spawnX;
         }
 
+        // Method to get the spawn Y of the level
         public int getSpawnY() {
             return this.spawnY;
         }
 
+        // Method to get the ending X of the level
         public int getEndX() {
             return this.endX;
         }
 
+        // Method to get the ending Y of the level
         public int getEndY() {
             return this.endY;
         }
 
+        // Method to return the level number
         public int getLevel() {
             return this.level;
         }
 
+        // Method to check if the level has been completed (from file)
         public boolean isCompleted() {
-
+            // Get the file from the folder
             File save = new File("save.txt");
+
+            // Make sure the file exists
+            if(!(save.exists())){
+                System.out.println("[ERROR} File not found!");
+                return false;
+            }
 
             // Create a scanner for the file.
             Scanner input = null;
             try {
+                // Get the file as a scanner
                 input = new Scanner(save);
             } catch (IOException e) {
                 System.out.println("[ERROR] Unable to access save.txt");
             }
 
+            // Make sure the input got initialized
             if (input == null) {
                 return false;
             }
@@ -521,12 +639,15 @@ public class DungeonTales extends JFrame {
             while (input.hasNext()) {
                 // Get the line in the file.
                 String line = input.nextLine();
-                // Get the saved player name from the file.
+                // Get the saved value from the file
+                // Check if the line is equal to the data we're looking for
                 if (line.equalsIgnoreCase(Integer.toString(getLevel())
                         + "Completed:true")) {
                     // Get the value
                     String completed = getFileValue(line);
+                    // Check if it's been completed
                     if (completed.equalsIgnoreCase("true")) {
+                        // Close the input, and return.
                         input.close();
                         return true;
                     }
@@ -534,67 +655,93 @@ public class DungeonTales extends JFrame {
             }
             // Close the input.
             input.close();
-
+            // Return false since no data was found.
             return false;
         }
 
+        // Method to set the level as completed
         public void setCompleted(boolean completed) {
 
+            // Make sure the level isn't already clear
             if (isCompleted()) {
                 return;
             }
 
+            // Write to the file the data
             try {
                 writeToFile(getLevel() + "Completed:true");
             } catch (IOException e) {
             }
         }
 
+        // Method to return all the moving platforms
         public Platform[] getMovingPlats() {
             return this.movingPlats;
         }
 
+        // Method to return all the platforms in the level
         public Rectangle[] getPlatforms() {
             return this.platforms;
         }
 
+        // Method to return all the spikes
         public Rectangle[] getSpikes() {
             return this.spikes;
         }
 
+        // Method to add a moving platform to the level
         public void addPlatform(int id, Platform form) {
             this.movingPlats[id - 1] = form;
         }
 
+        // Method to return the game timer
         public GameTimer getGameTimer() {
             return this.gt;
         }
 
     }
 
+    // Level manager class
     static class LevelManager {
+        // Create an array of all the levels we have
         public static Level[] levels = new Level[4];
 
+        /*
+        Method to return the level object
+        @param The level you would like to search for
+        @returns The level object
+         */
         public static Level getLevel(int level) {
+            // Loop through each level stored
             for (Level l : levels) {
+                // Make sure the level isn't null
                 if (l == null) {
                     continue;
                 }
+                // If the number of the level is equal to the parameter
                 if (l.getLevel() == level) {
+                    // Return the level
                     return l;
                 }
             }
+            // Return null, level was not found
             return null;
         }
     }
 
+    // Constructor for our main class
     public DungeonTales() {
+        // Set the size of the window to be full screen
         setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+        // Disable resizing of the screen
         setResizable(false);
+        // Set the title of the window
         setTitle("| Dungeon Tales |");
 
         try {
+            // Play the menu music
             playMusicFile("MenuMusic.wav", true);
+            // Load all our images & resources
             door = ImageIO.read(new File("Door.png"));
             knight = ImageIO.read(new File("Knight.png"));
             knight2 = ImageIO.read(new File("Knight2.png"));
@@ -609,73 +756,103 @@ public class DungeonTales extends JFrame {
 
         // Set the menu pane.
         menu = new MainMenu();
+        // Create a pause panel instance
         pausePanel = new PausePanel();
+        // Add the menu to the window
         add(menu);
 
+        // Add the key listener to the window
         addKeyListener(kl);
+        // Request focus to allow listeners to work
         this.requestFocusInWindow();
+        // Set this window to be the focused one
         this.setFocusable(true);
 
+        // Set the default close operation to avoid multiple windows
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Set the window to visible
         setVisible(true);
 
+        // If the name is not stored, get the name from player.
         if (getName) {
+            // Create a name variable
             String name;
+            // Loop until the user enters a name
             do {
+                // Use a input dialog to retrieve the name
                 name = JOptionPane.showInputDialog(this, "Enter your name", "Welcome to Dungeon Tales", JOptionPane.INFORMATION_MESSAGE);
-            }while(name == null);
+            } while (name == null);
+            // Set the players name to the entered one
             p.setName(name);
             try {
+                // Save the new name to the file
                 writeToFile("PlayerName:" + name);
             } catch (IOException e) {
 
             }
         }
 
+        // Timer to control movement
         movement = new Timer(8, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
+                // If the player can not move, disable movement.
                 if (!(p.canMove())) {
                     return;
                 }
 
+                // If the player has paused the game, disable movement.
                 if (p.isPaused()) {
                     return;
                 }
 
+                // If no keys are being pressed, do not move the player.
                 if (pressed[0] == 0) {
                     return;
                 }
 
+                // Get the key that is currently being pressed
                 int key = pressed[0];
 
+                // Check to see if the player is attempting to move
                 if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_LEFT) {
+                    // If the player is trying to go off the screen, move them back.
                     if (p.getX() > SCREEN_WIDTH - 140) {
                         p.setX(p.getX() - 4);
                     }
+                    // Player tries to go off the left of the screen, move player back.
                     if (p.getX() < 10) {
                         p.setX(p.getX() + 4);
                     }
                 }
 
+                // Make sure the current level is not null
                 if (p.getCurrentLevel() == null) {
                     return;
                 }
 
+                // Door win collision
+
+                // Create a rectangle around the door
                 Rectangle door = new Rectangle(
                         p.getCurrentLevel().getEndX() + 90, p.getCurrentLevel()
                         .getEndY(), 187 - 100, 187);
+                // Create a rectangle on the middle of the player
                 Rectangle middlePlayer = new Rectangle(p.getX() + PLAYER_WIDTH
                         / 2, p.getY(), 1, 1);
 
+                // Check if the players rectangle is intersecting the doors
                 if (middlePlayer.intersects(door)) {
+                    // Pause the current game timer
                     p.getCurrentLevel().getGameTimer().pauseTime();
+                    // If it's the tutorial, display the tutorial completion text.
                     if (p.getCurrentLevel().getLevel() == 4) {
                         JOptionPane.showMessageDialog(p.getCurrentLevel(),
                                 "You've completed the tutorial in "
                                         + p.getCurrentLevel().getGameTimer()
                                         .getTime() + " seconds!");
                     } else {
+                        // Else show the normal completion text
                         JOptionPane.showMessageDialog(p.getCurrentLevel(),
                                 "You've completed level "
                                         + p.getCurrentLevel().getLevel()
@@ -683,15 +860,24 @@ public class DungeonTales extends JFrame {
                                         + p.getCurrentLevel().getGameTimer()
                                         .getTime() + " seconds!");
                     }
+                    // Disable player movement
                     p.setCanMove(false);
+                    // Remove the current level panel
                     tales.remove(p.getCurrentLevel());
+                    // Reset the game timer for that level
                     p.getCurrentLevel().getGameTimer().resetTime();
+                    // Set the level to completed
                     p.getCurrentLevel().setCompleted(true);
+                    // Set the window to display main menu
                     tales.setContentPane(new MainMenu());
+                    // Disable pausing
                     p.canPause = false;
+                    // Refresh the window
                     tales.validate();
+                    // Remove any pressed keys (stopping any current movement)
                     pressed[0] = 0;
                     try {
+                        // Stop the previous music, and play the menu music.
                         stopMusicFile();
                         playMusicFile("MenuMusic.wav", true);
                     } catch (IOException ee) {
@@ -700,22 +886,25 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
+                // Check if the player is pressing left arrow key
                 if (pressed[0] == KeyEvent.VK_LEFT) {
+                    // Move the character to the left
                     p.setX(p.getX() - 4);
                 } else if (pressed[0] == KeyEvent.VK_RIGHT) {
+                    // Else if the player is pressing right arrow key
+                    // Move player to the right
                     p.setX(p.getX() + 4);
                 }
 
             }
         });
 
+        // Timer to catch any collision
         Timer collide = new Timer(5, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Create a rectangle at the player. (for the right)
                 Rectangle rightPlayer = new Rectangle(p.getX() + 90 / 2, p
                         .getY(), PLAYER_WIDTH - 80, PLAYER_HEIGHT - 20);
-                // p.getCurrentLevel().getGraphics().drawRect(p.getX() + 80/2,
-                // p.getY(), PLAYER_WIDTH - 70, PLAYER_HEIGHT - 20);
 
                 // Create a rectangle at the player. (for the left)
                 Rectangle leftPlayer = new Rectangle(p.getX() + 40, p.getY(),
@@ -726,34 +915,43 @@ public class DungeonTales extends JFrame {
                         - 20, p.getY() + PLAYER_HEIGHT - 5,
                         PLAYER_WIDTH / 2 - 30, 1);
 
+                // Make sure the current level isn't null
                 if (p.getCurrentLevel() == null) {
                     return;
                 }
 
+                // Loop through each platform on the current level
                 for (Rectangle r : p.getCurrentLevel().getPlatforms()) {
+                    // Check if the player is colliding on the right
                     if (r.intersects(rightPlayer)) {
+                        // If so, move the player to the left to counter act the movement.
                         p.setX(p.getX() - 4);
                         return;
                     } else if (r.intersects(leftPlayer)) {
+                        // Move the player to the right due to collision detecting on the left.
                         p.setX(p.getX() + 4);
                         return;
                     }
                 }
 
+                // Loop through all spikes on the level
                 for (Rectangle spike : p.getCurrentLevel().getSpikes()) {
+                    // Create a more centered rectangle around each spike
                     Rectangle newSpike = new Rectangle((int) spike.getX() + 50,
                             (int) spike.getY(), spike.width - 95, spike.height);
 
+                    // Check if the spike is colliding with any part of the player
                     if (newSpike.intersects(player)
                             || newSpike.intersects(leftPlayer)
                             || newSpike.intersects(rightPlayer)) {
-                        // Player dies.
+                        // Respawn the player to spawn of the level
                         p.setX(p.getCurrentLevel().getSpawnX());
                         p.setY(p.getCurrentLevel().getSpawnY());
                     }
                 }
             }
         });
+        // Begin the timer
         collide.start();
 
         // Create a new loop to run gravity.

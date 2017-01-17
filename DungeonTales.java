@@ -1886,6 +1886,10 @@ public class DungeonTales extends JFrame {
 		
 		public Leaderboards(){
 			repaint();
+			GridBagLayout layout = new GridBagLayout();
+			GridBagConstraints gc = layout.getConstraints(this);
+			setLayout(layout);
+			
 		}
 		
 	}

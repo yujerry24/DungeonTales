@@ -2245,6 +2245,14 @@ public class DungeonTales extends JFrame {
 
     public static void main(String[] args) throws IOException {
 
+    	// Create the leaderboard save file
+    	File board = new File("Leaderboards.txt");
+    	
+    	if(!board.exists()){
+    		// Create the leaderboards.txt file
+    		board.createNewFile();
+    	}
+    	
         // Create a save file if it does not already exist.
         File save = new File("save.txt");
         if (!save.exists()) {

@@ -631,31 +631,37 @@ public class DungeonTales extends JFrame {
 			Scanner file = new Scanner(board);
 
 			String[] textFile = new String[16];
-			while(file.hasNext()){
-				for(int i = 0; i < 16; i++){
+			while (file.hasNext()) {
+				for (int i = 0; i < 16; i++) {
 					textFile[i] = file.nextLine();
 				}
-			}	
+			}
 			file.close();
 			board.delete();
-			
+
 			File update = new File("Leaderboards.txt");
 			update.createNewFile();
 			PrintWriter out = new PrintWriter(update);
-			
-			for(String line : textFile){
-				if(line.equalsIgnoreCase("Level " + getLevel() + " Scores")){
-					out.println(line);
-					for(String score : tops){
-						out.println(score);
+
+			int index = -1;
+
+			for (int i = 0; i < 16; i++) {
+				String line = textFile[i];
+				if (i < index || i > (index + 3) || index == -1) {
+					if (line.equalsIgnoreCase("Level " + getLevel() + " Scores")) {
+						index = i;
+						out.println(line);
+						for (String score : tops) {
+							out.println(score);
+						}
+					} else {
+						out.println(line);
 					}
-				}else{
-					out.println(line);
 				}
 			}
-			
+
 			out.close();
-			
+
 		}
 
 		// Method to get the spawn X of the level
@@ -949,10 +955,20 @@ public class DungeonTales extends JFrame {
 										.parseInt(getFileValue(line));
 								if (time < topTime) {
 									if (i != 2) {
-										tops[i + 1] = line.substring(line
-												.indexOf(":")) + ":" + topTime;
+										for (int j = i; j < tops.length - 1; j++) {
+											line = tops[j + 1];
+											topTime = Integer
+													.parseInt(getFileValue(line));
+											System.out.println(line);
+											if (line.indexOf(":") != -1) {
+												tops[j + 1] = line.substring(0,
+														line.indexOf(":"))
+														+ ":" + topTime;
+											}
+										}
 									}
 									tops[i] = p.getName() + ":" + time;
+									found = true;
 								}
 							}
 						}
@@ -1518,7 +1534,7 @@ public class DungeonTales extends JFrame {
 							+ "<br>2. Use the <i>space bar</i> to jump.<br>3."
 							+ " Hitting <i>spikes</i> will result in restarting the level.<br>4. Reach "
 							+ "the door to complete the level.<br>5. Some platforms <i>move</i>. They can "
-							+ "carry you past obstacles.<br><br><center>Press <i>ESC</i> to resume the game.</center></html>");
+							+ "carry you past obstacles.<br>6. Press <i>escape</i> to pause the game at any time<br><br><center>Press <i>ESC</i> to resume the game.</center></html>");
 			// Set the font size to 25.
 			movement.setFont(new Font(header.getFont().getName(), Font.PLAIN,
 					25));
@@ -1858,6 +1874,22 @@ public class DungeonTales extends JFrame {
 		}
 	};
 
+	// Leaderboards panel
+	class Leaderboards extends JPanel {
+		
+		@Override
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			
+			g.drawImage(menuBack, 0, 0, null);
+		}
+		
+		public Leaderboards(){
+			repaint();
+		}
+		
+	}
+	
 	// Main menu panel
 	class MainMenu extends JPanel {
 
@@ -1867,6 +1899,7 @@ public class DungeonTales extends JFrame {
 		JButton button4 = new JButton("Level 3");
 		JButton credits = new JButton("Credits");
 		JButton instructions = new JButton("Instructions");
+		JButton leaderboard = new JButton("Leaderboards");
 		JButton quit = new JButton("Quit");
 		JPanel panel1 = new JPanel(), panel2 = new JPanel(),
 				panel3 = new JPanel(), panel4 = new JPanel(),
@@ -2016,7 +2049,10 @@ public class DungeonTales extends JFrame {
 						// tales.remove(menu);
 						tales.setContentPane(one);
 						tales.validate();
-					} else if (button == button3) {
+					} else if(button == leaderboard){
+						tales.setContentPane(new Leaderboards());
+						tales.validate();
+					}else if (button == button3) {
 						if (two == null) {
 							JOptionPane
 									.showMessageDialog(
@@ -2171,6 +2207,16 @@ public class DungeonTales extends JFrame {
 			add(instructions);
 			instructions.addActionListener(al);
 			instructions.addMouseListener(ml);
+			
+			leaderboard.setContentAreaFilled(false);
+			leaderboard.setBorderPainted(false);
+			leaderboard.setForeground(Color.white);
+			leaderboard.setFocusable(false);
+			leaderboard.setFont(new Font(leaderboard.getFont().getName(),
+					Font.PLAIN, 30));
+			add(leaderboard);
+			leaderboard.addActionListener(al);
+			leaderboard.addMouseListener(ml);
 
 			quit.setContentAreaFilled(false);
 			quit.setBorderPainted(false);

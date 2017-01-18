@@ -2169,7 +2169,8 @@ public class DungeonTales extends JFrame {
 
         }
 
-        public MainMenu() {
+         public MainMenu() {
+            //Set constant variables to get the levels for tutorial and the three different levels
             final Level tutorial = LevelManager.getLevel(4);
             final Level one = LevelManager.getLevel(1);
             final Level two = LevelManager.getLevel(2);
@@ -2185,12 +2186,13 @@ public class DungeonTales extends JFrame {
                     name = JOptionPane.showInputDialog(this, "Enter your name",
                             "Welcome to Dungeon Tales",
                             JOptionPane.INFORMATION_MESSAGE);
-                    if (name != null) {
+                    //Custom error checking for main menu and its names
+                    if(name != null) {
                         if (name.indexOf(" ") != -1) {
                             JOptionPane.showMessageDialog(this, "No spaces are allowed.", "Warning", JOptionPane.ERROR_MESSAGE);
                         } else if (name.length() > 16) {
                             JOptionPane.showMessageDialog(this, "Maximum of 16 characters allowed.", "Warning", JOptionPane.ERROR_MESSAGE);
-                        } else if (name.length() <= 0) {
+                        }else if(name.length() <= 0){
                             JOptionPane.showMessageDialog(this, "Please enter a name.", "Warning", JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -2205,58 +2207,73 @@ public class DungeonTales extends JFrame {
 
                 }
             }
-
+            //Key listener to for the credits screen
             addKeyListener(kl);
 
             panel5.setLayout(null);
 
             panel5.setBackground(Color.lightGray);
-
+            
+            //The fonts and other specifics used to create the credit screen
             JLabel creditsTitle = new JLabel("CREDITS");
             creditsTitle.setFont(new Font("TimesRoman",
                     Font.BOLD + Font.ITALIC, 80));
             creditsTitle.setBounds(SCREEN_WIDTH / 2 - 500, 150,
                     SCREEN_WIDTH - 500, 100);
+            
+            //Add the credits buttona and its action listener
             panel5.add(creditsTitle);
-
+            
+            //Credits formatted with HTML code
             JLabel creditsInfo = new JLabel(
                     "<html>Sound Credits:<br>https://www.youtube.com/user/gamingsoundfx<br><br>"
                             + "Knight Image Credits: <br> https://www.google.ca/search?q=knight+image+cartoon&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjXrZOAuL...<br><br>"
                             + "Door Image Credits: <br> http://cliparts.co/cartoon-door <br><br> Dungeon Background Image Credits: <br> "
                             + "http://steamtradingcards.wikia.com/wiki/File:Darkest_Dungeon_Background_The_Ruins.jpg<br><br>"
                             + "Spikes Image Credits: <br> http://sonic.wikia.com/wiki/Spikes_(obstacle)<br><br>Game created by Justin, Alex, and Jerry<html>");
-
+            
             creditsInfo.setFont(new Font("TimesRoman", Font.BOLD, 18));
             creditsInfo.setBounds(SCREEN_WIDTH / 2 - 500, 0,
                     SCREEN_WIDTH - 500, SCREEN_HEIGHT);
             panel5.add(creditsInfo);
 
+            //Back button to go back into the main menu
             JButton back = new JButton("Main Menu");
+            
+            //Set the panel contents to false to go back to main menu
             back.setContentAreaFilled(false);
             back.setBorderPainted(false);
             back.setFocusable(false);
+            //Change the font for the new panel
             back.setFont(new Font(back.getFont().getName(), Font.PLAIN, 25));
             back.setBounds(SCREEN_WIDTH / 2 - 500, 0, SCREEN_WIDTH - 900,
                     SCREEN_HEIGHT + 700);
+            
+            //Add the panel back
             panel5.add(back);
 
+            //Action listener for main menu
             ActionListener al = new ActionListener() {
-
+              
+              //Repaint when a button is clicked
                 public void actionPerformed(ActionEvent event) {
                     repaint();
 
                     if (!(event.getSource() instanceof JButton)) {
                         return;
                     }
-
+                    
+                    //Jbutton for the source of event
                     JButton button = (JButton) event.getSource();
-
+                    
                     if (button.getText().indexOf("Level") != -1) {
                         Level tutorial = LevelManager.getLevel(4);
                         Level one = LevelManager.getLevel(1);
                         Level two = LevelManager.getLevel(2);
-
+                        
+                        //If previous levels have index -1 which means they have not been completed then you display the message (incomplete) for level 1
                         if (button.getText().indexOf("1") != -1) {
+                          //Message displays if tutorial was not completed
                             if (!tutorial.isCompleted()) {
                                 JOptionPane
                                         .showMessageDialog(
@@ -2266,7 +2283,10 @@ public class DungeonTales extends JFrame {
                                                 JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             }
+                            
+                        //If previous levels have index -1 which means they have not been completed then you display the message (incomplete) for level 2
                         } else if (button.getText().indexOf("2") != -1) {
+                          //Message displays if level one was not completed
                             if (!one.isCompleted()) {
                                 JOptionPane
                                         .showMessageDialog(
@@ -2276,7 +2296,10 @@ public class DungeonTales extends JFrame {
                                                 JOptionPane.INFORMATION_MESSAGE);
                                 return;
                             }
+                            
+                        //If previous levels have index -1 which means they have not been completed then you display the message (incomplete) for level 3
                         } else if (button.getText().indexOf("3") != -1) {
+                          //Message displays if level two was not completed
                             if (!two.isCompleted()) {
                                 JOptionPane
                                         .showMessageDialog(
@@ -2289,27 +2312,31 @@ public class DungeonTales extends JFrame {
                         }
 
                     }
-
+                    //Display the main menu screen
                     if (button.getText().equalsIgnoreCase("Main Menu")) {
                         menu.setVisible(true);
                         tales.setContentPane(new MainMenu());
                         tales.validate();
                         return;
                     }
-
+                    //If tutorial cannot be loaded then display the message
                     if (button == buttonT) {
                         if (tutorial == null) {
                             System.out.println("[ERROR] Unable to load level.");
                             return;
                         }
+                        //Set the current panel to false and display tutorial level and its related features
+                        //if the tutorial can be loaded
                         panel.setVisible(false);
                         menu.setVisible(false);
                         p.setPaused(false);
                         p.setCurrentLevel(tutorial);
                         tales.setContentPane(tutorial);
                         tales.validate();
+                        //Quit the game
                     } else if (button == quit) {
                         System.exit(0);
+                        //Instructions screen
                     } else if (button == instructions) {
                         button.setForeground(Color.white);
                         atInstructions = true;

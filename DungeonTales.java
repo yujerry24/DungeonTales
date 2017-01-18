@@ -599,67 +599,103 @@ public class DungeonTales extends JFrame {
             timer.start();
         }
 
-        // Method to return the top 3 scores for that level
+        /*
+        Method to return the 3 top scores for a level
+        @returns a string array of the top scores, and names.
+         */
         public String[] getTopScores() throws IOException {
+            // Get the leaderboards file and make sure it exists.
             File board = new File("Leaderboards.txt");
             if (!board.exists()) {
                 return null;
             }
 
+            // Create a scanner of the file.
             Scanner file = new Scanner(board);
 
+            // Loop through the values in the file.
             while (file.hasNext()) {
+                // Continue to another line
                 String line = file.nextLine();
+                // Check if the data is for the level we're looking for
                 if (line.equalsIgnoreCase("Level " + getLevel() + " Scores")) {
+                    // Add the top 3 scores to the array
                     tops[0] = file.nextLine();
                     tops[1] = file.nextLine();
                     tops[2] = file.nextLine();
+                    // Close the scanner.
                     file.close();
+                    // Return the array of top scores.
                     return this.tops;
                 }
             }
+            // Close the file in case no top scores were found
             file.close();
+            // Return null meaning no scores were found.
             return null;
         }
 
+        /*
+        Method to update scores in the leaderboards file
+         */
         public void updateScores() throws IOException {
+            // Get the leaderboard file, and make sure it exists.
             File board = new File("Leaderboards.txt");
             if (!board.exists()) {
                 return;
             }
 
+            // Create a scanner of the file.
             Scanner file = new Scanner(board);
 
+            // Create an array to hold the previous file, and it's values.
             String[] textFile = new String[16];
+            // Loop through the files values
             while (file.hasNext()) {
+                // Add the line to the array (16 times), once for each line.
                 for (int i = 0; i < 16; i++) {
                     textFile[i] = file.nextLine();
                 }
             }
+            // Close the scanner.
             file.close();
+            // Delete the previous leaderboards file
             board.delete();
 
+            // Create a new file with the updated scores.
             File update = new File("Leaderboards.txt");
             update.createNewFile();
+            // Create a print writer to print values to the file.
             PrintWriter out = new PrintWriter(update);
 
+            // Create an index variable to locate the new scores for the level.
             int index = -1;
 
+            // Loop through the array of the previous file
             for (int i = 0; i < 16; i++) {
+                // Get the line from that file.
                 String line = textFile[i];
+                // Make sure it does not print for the three lines following the header
                 if (i < index || i > (index + 3) || index == -1) {
+                    // Check to see if the line is for this level.
                     if (line.equalsIgnoreCase("Level " + getLevel() + " Scores")) {
+                        // Save the location of the line
                         index = i;
+                        // Print out the header (LEVEL (LVL) SCORES
                         out.println(line);
+                        // Loop through all the top scores
                         for (String score : tops) {
+                            // Print out the top three scores.
                             out.println(score);
                         }
                     } else {
+                        // Print out any lines we aren't looking for.
                         out.println(line);
                     }
                 }
             }
 
+            // Close the output file.
             out.close();
 
         }
@@ -910,29 +946,41 @@ public class DungeonTales extends JFrame {
                     // Pause the current game timer
                     p.getCurrentLevel().getGameTimer().pauseTime();
                     // Put name in leaderboard
+                    // Create an array to hold the top players from the current level.
                     String[] tops = null;
                     try {
+                        // Get the top scores.
                         tops = p.getCurrentLevel().getTopScores();
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
 
+                    // Make sure that the top scores aren't null.
                     if (tops == null) {
                         return;
                     }
 
+                    // Get the time it took for the player to beat the level.
                     int time = p.getCurrentLevel().getGameTimer().getTime();
+                    // Create a variable to control searching
                     boolean found = false;
+                    // Loop through each value of the scores
                     for (int i = 0; i < tops.length; i++) {
+                        // Check to make sure that the spot has not been found yet.
                         if (!found) {
+                            // Get the string with the score
                             String line = tops[i];
 
-
+                            // If the line is equal to empty, fill the spot.
                             if (line.equalsIgnoreCase("empty")) {
+                                // Set that spot to be the players score.
                                 tops[i] = p.getName() + ":" + time;
+                                // Found is true now that we've put the player in
                                 found = true;
                             } else {
+                                // Get the time value from the string
                                 String timeString = getFileValue(line);
+                                // Convert the time string to an integer
                                 int topTime = Integer
                                         .parseInt(timeString);
 
@@ -940,28 +988,40 @@ public class DungeonTales extends JFrame {
                                 String name = line.substring(0, line.indexOf(":"));
                                 if (name.equalsIgnoreCase(p.getName())) {
                                     // Player is on the board already
+                                    // If the players time is better than their previous
                                     if (time < topTime) {
+                                        // Put the player into that position with new time
                                         tops[i] = p.getName() + ":" + time;
+                                        // found position
                                         found = true;
                                     } else {
+                                        // Break from the loop
                                         i = tops.length;
                                     }
                                 }
 
+                                // Make sure that the players name hasn't been repeated
                                 if (!found) {
+                                    // Compare the finishing time with those of the leaderboard
                                     if (time < topTime) {
+                                        // If the position is not the last one, move other values down.
                                         if (i != 2) {
+                                            // If the position is the first slot
                                             if (i == 0) {
+                                                // Move the 2 other values down in the array.
                                                 String num1 = tops[i];
                                                 String num2 = tops[i + 1];
                                                 tops[i + 1] = num1;
                                                 tops[i + 2] = num2;
                                             } else {
+                                                // Else if the position is the second slot, move the 1 other value down.
                                                 String num2 = tops[i];
                                                 tops[i + 1] = num2;
                                             }
                                         }
+                                        // Put the player and their time into the index.
                                         tops[i] = p.getName() + ":" + time;
+                                        // Set found to true
                                         found = true;
                                     }
                                 }
@@ -970,6 +1030,7 @@ public class DungeonTales extends JFrame {
                     }
 
                     try {
+                        // Update the file with the new scores.
                         p.getCurrentLevel().updateScores();
                     } catch (IOException e1) {
                         e1.printStackTrace();
@@ -1780,14 +1841,18 @@ public class DungeonTales extends JFrame {
             // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
 
+            // If the button is the quit button, make it red on hover.
             if (button.getText().equalsIgnoreCase("Quit")) {
                 button.setForeground(Color.red);
                 return;
             } else if (button.getText().indexOf("Level") != -1) {
+                // Get all the levels into variables.
                 Level tutorial = LevelManager.getLevel(4);
                 Level one = LevelManager.getLevel(1);
                 Level two = LevelManager.getLevel(2);
 
+                // Check to see if the level has been unlocked
+                // If not, then return to prevent colour changing.
                 if (button.getText().indexOf("1") != -1) {
                     if (!tutorial.isCompleted()) {
                         return;
@@ -1819,14 +1884,18 @@ public class DungeonTales extends JFrame {
             // Cast the source to a Jbutton.
             JButton button = (JButton) e.getSource();
 
+            // Check to see if they are exiting a level or tutorial button.
             if (button.getText().indexOf("Level") != -1
                     || button.getText().equalsIgnoreCase("Tutorial")) {
+                // Get all the levels into variables
                 Level tutorial = LevelManager.getLevel(4);
                 Level one = LevelManager.getLevel(1);
                 Level two = LevelManager.getLevel(2);
                 Level three = LevelManager.getLevel(3);
 
+                // Check if it's level 1.
                 if (button.getText().indexOf("1") != -1) {
+                    // Set the colour of the button based on if it's unlocked/completed.
                     if (!tutorial.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
@@ -1836,6 +1905,7 @@ public class DungeonTales extends JFrame {
                         button.setForeground(Color.white);
                     }
                 } else if (button.getText().indexOf("2") != -1) {
+                    // Set the colour of the level two button based on if it's unlocked/completed
                     if (!one.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
@@ -1845,6 +1915,7 @@ public class DungeonTales extends JFrame {
                         button.setForeground(Color.white);
                     }
                 } else if (button.getText().indexOf("3") != -1) {
+                    // Set the colour of the level 3 button based on if it's unlocked/completed
                     if (!two.isCompleted()) {
                         button.setForeground(Color.red);
                         return;
@@ -1855,12 +1926,13 @@ public class DungeonTales extends JFrame {
                     }
                 }
 
+                // Check if the button is the tutorial button.
                 if (button.getText().equalsIgnoreCase("Tutorial")) {
+                    // If the tutorial is not completed, set it to white since it is always unlocked.
                     if (!tutorial.isCompleted()) {
                         button.setForeground(Color.white);
                     }
                 }
-
             } else {
                 // Set the colour of the button to white.
                 button.setForeground(Color.white);
@@ -1872,41 +1944,57 @@ public class DungeonTales extends JFrame {
     // Leaderboards panel
     class Leaderboards extends JPanel {
 
+        // Create a paint component to draw the background image.
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
+            // Draw background image
             g.drawImage(menuBack, 0, 0, null);
         }
 
+        // Create an action listener to catch button presses.
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Make sure the source is from a button.
                 if (e.getSource() instanceof JButton) {
+                    // Set the window to display the main menu.
                     tales.setContentPane(new MainMenu());
+                    // Refresh the window
                     tales.validate();
                 }
             }
         };
 
+        // Constructor for leaderboards
         public Leaderboards() {
+            // Paint the background image
             repaint();
+            // Create a layout for the panel
             GridBagLayout layout = new GridBagLayout();
+            // Get the constraints for the layout
             GridBagConstraints gc = layout.getConstraints(this);
+            // Set the panel layout
             setLayout(layout);
 
+            // Get the level
             Level one = LevelManager.getLevel(1);
+            // Make sure it's not null
             if (one == null) {
                 return;
             }
+            // Get the top scores
             String[] scores = null;
             try {
                 scores = one.getTopScores();
             } catch (IOException e) {
             }
+            // Make sure scores aren't null
             if (scores == null) {
                 return;
             }
+            // Print out the top 3 scores of that level.
             String text1 = "<html><center><b>LEVEL 1 TOP SCORES</b><br>";
             if (scores[0].indexOf(":") != -1) {
                 text1 += scores[0].substring(0, scores[0].indexOf(":")).toUpperCase() + " " + scores[0].substring(scores[0].indexOf(":") + 1) + "s" + "<br>";
@@ -1925,27 +2013,37 @@ public class DungeonTales extends JFrame {
             }
             text1 += "</center></html>";
 
-
+            // Create a JLabel to hold the text
             JLabel lvl1 = new JLabel(text1);
+            // Set the font colour
             lvl1.setForeground(Color.white);
+            // Set the font size
             lvl1.setFont(new Font(lvl1.getFont().getName(), Font.PLAIN, 25));
+            // Position the label
             gc.gridx = 0;
             gc.gridy = 1;
+            // Provide insets to space components out.
             gc.insets = new Insets(0, 0, 20, 0);
+            // Add it to the panel
             add(lvl1, gc);
 
+            // Get the level 2
             Level two = LevelManager.getLevel(2);
+            // Make sure it's not null
             if (two == null) {
                 return;
             }
+            // Get the top scores from file
             String[] scores2 = null;
             try {
                 scores2 = two.getTopScores();
             } catch (IOException e) {
             }
+            // Make sure scores are not null
             if (scores2 == null) {
                 return;
             }
+            // Generate the top 3 scores from the file, and put them into one string.
             String text2 = "<html><center><b>LEVEL 2 TOP SCORES</b><br>";
             if (scores2[0].indexOf(":") != -1) {
                 text2 += scores2[0].substring(0, scores2[0].indexOf(":")).toUpperCase() + " " + scores2[0].substring(scores2[0].indexOf(":") + 1) + "s" + "<br>";
@@ -1964,26 +2062,35 @@ public class DungeonTales extends JFrame {
             }
             text2 += "</center></html>";
 
-
+            // Create a JLabel to hold lvl 2 scores
             JLabel lvl2 = new JLabel(text2);
+            // Set the font colour
             lvl2.setForeground(Color.white);
+            // Set the font size
             lvl2.setFont(new Font(lvl2.getFont().getName(), Font.PLAIN, 25));
+            // Position the component
             gc.gridx = 0;
             gc.gridy = 2;
+            // Add it to the panel
             add(lvl2, gc);
 
+            // Get level 3
             Level three = LevelManager.getLevel(3);
+            // Make sure it's not null
             if (three == null) {
                 return;
             }
+            // Get the scores for the level
             String[] scores3 = null;
             try {
                 scores3 = three.getTopScores();
             } catch (IOException e) {
             }
+            // Make sure the scores aren't null
             if (scores3 == null) {
                 return;
             }
+            // Generate the top 3 scores into one string
             String text3 = "<html><center><b>LEVEL 3 TOP SCORES</b><br>";
             if (scores3[0].indexOf(":") != -1) {
                 text3 += scores3[0].substring(0, scores3[0].indexOf(":")).toUpperCase() + " " + scores3[0].substring(scores3[0].indexOf(":") + 1) + "s" + "<br>";
@@ -2002,24 +2109,35 @@ public class DungeonTales extends JFrame {
             }
             text3 += "</center></html>";
 
-
+            // Create a JLabel to hold the string
             JLabel lvl3 = new JLabel(text3);
+            // Set the font colour
             lvl3.setForeground(Color.white);
+            // set the font size
             lvl3.setFont(new Font(lvl2.getFont().getName(), Font.PLAIN, 25));
+            // Position the JLabel
             gc.gridx = 0;
             gc.gridy = 3;
+            // Add it to the panel
             add(lvl3, gc);
 
+            // Create a button for the main menu
             JButton back = new JButton("Main Menu");
+            // Disable the background of the button
             back.setContentAreaFilled(false);
-            //back.setBorderPainted(false);
+            // Set the text colour on the button
             back.setForeground(Color.white);
+            // Disable highlighting of the button
             back.setFocusable(false);
+            // Set the font size of the button
             back.setFont(new Font(back.getFont().getName(),
                     Font.PLAIN, 30));
+            // Position the button
             gc.gridx = 0;
             gc.gridy = 5;
+            // Add it to the panel
             add(back, gc);
+            // Add the action and mouse listener to the button.
             back.addActionListener(al);
             back.addMouseListener(ml);
 
@@ -2067,12 +2185,12 @@ public class DungeonTales extends JFrame {
                     name = JOptionPane.showInputDialog(this, "Enter your name",
                             "Welcome to Dungeon Tales",
                             JOptionPane.INFORMATION_MESSAGE);
-                    if(name != null) {
+                    if (name != null) {
                         if (name.indexOf(" ") != -1) {
                             JOptionPane.showMessageDialog(this, "No spaces are allowed.", "Warning", JOptionPane.ERROR_MESSAGE);
                         } else if (name.length() > 16) {
                             JOptionPane.showMessageDialog(this, "Maximum of 16 characters allowed.", "Warning", JOptionPane.ERROR_MESSAGE);
-                        }else if(name.length() <= 0){
+                        } else if (name.length() <= 0) {
                             JOptionPane.showMessageDialog(this, "Please enter a name.", "Warning", JOptionPane.ERROR_MESSAGE);
                         }
                     }
@@ -2468,8 +2586,11 @@ public class DungeonTales extends JFrame {
     public static void registerLevels() throws IOException {
 
         // Tutorial
+
+        // Create the spikes for the tutorial
         Rectangle[] spikesTut = {new Rectangle(725, SCREEN_HEIGHT - 50, 120,
                 25)};
+        // Create the platforms for the tutorial
         Rectangle[] tutorialPlats = {
                 new Rectangle(400, SCREEN_HEIGHT - 150, 180, 20),
                 new Rectangle(1420, SCREEN_HEIGHT - 550, 20, 900),
@@ -2477,14 +2598,19 @@ public class DungeonTales extends JFrame {
                         130 + GROUND_WIDTH),
                 new Rectangle(855, SCREEN_HEIGHT - GROUND_WIDTH - 180, 40,
                         180 + GROUND_WIDTH)};
+        // Create a level instance for the tutorial.
         Level tutorial = new Level(4, 10, SCREEN_HEIGHT - GROUND_WIDTH,
                 SCREEN_WIDTH - 400, SCREEN_HEIGHT - GROUND_WIDTH - 50, p,
                 tutorialPlats, 1, spikesTut);
+        // Add the key listener to the panel
         tutorial.addKeyListener(kl);
+        // Create the moving platform for the tutorial
         Platform tPlat1 = new Platform(1250, 650, 1250, 1030, 90, 30, tutorial,
                 1, 2);
 
         // Level 1
+
+        // Create spikes for level 1
         Rectangle[] spikesOne = {new Rectangle(400, 275, 120, 25),
                 new Rectangle(510, 275, 120, 25),
                 new Rectangle(620, 275, 120, 25),
@@ -2496,19 +2622,25 @@ public class DungeonTales extends JFrame {
                 new Rectangle(1030, 730, 120, 30),
                 new Rectangle(1140, 730, 150, 30),
                 new Rectangle(SCREEN_WIDTH - 620, 670, 120, 30)};
+        // Create platforms for level 1
         Rectangle[] onePlats = {new Rectangle(0, 300, 850, 30),
                 new Rectangle(1250, 300, 500, 30),
                 new Rectangle(200, 700, 500, 30),
                 new Rectangle(1300, 700, 750, 30),
                 new Rectangle(700, 760, 600, 30)};
+        // Create the level instance for level 1
         Level one = new Level(1, 20, 20, SCREEN_WIDTH - 300, SCREEN_HEIGHT
                 - GROUND_WIDTH - 50, p, onePlats, 4, spikesOne);
+        // Create the moving platforms for level 1
         Platform lPlat1 = new Platform(SCREEN_WIDTH - 120, 100,
                 SCREEN_WIDTH - 120, 600, 90, 30, one, 1, 3);
         Platform lPlat2 = new Platform(350, 175, 1150, 175, 90, 30, one, 2, 3);
         Platform lPlat3 = new Platform(700, 600, 950, 600, 60, 30, one, 3, 4);
         Platform lPlat4 = new Platform(1050, 600, 1600, 600, 90, 30, one, 4, 6);
+
         // Level 2
+
+        // Create the spikes for level 2
         Rectangle[] spikesTwo = {new Rectangle(370, 270, 120, 30),
                 new Rectangle(480, 270, 120, 30),
                 new Rectangle(590, 270, 120, 30),
@@ -2548,11 +2680,13 @@ public class DungeonTales extends JFrame {
                 new Rectangle(280, 1020, 120, 30),
                 new Rectangle(170, 1020, 120, 30),
                 new Rectangle(SCREEN_WIDTH - 270, 320, 120, 30)};
+        // Create the platforms for level 2
         Rectangle[] twoPlats = {new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
                 new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
                 new Rectangle(200, 840, 1420, 30),
                 new Rectangle(SCREEN_WIDTH - 300, 300, 30, 570),
                 new Rectangle(SCREEN_WIDTH - 270, 350, 120, 30)};
+        // Create the level instance for level 2
         Level two = new Level(2, 40, 150, 100, 425, p, twoPlats, 10, spikesTwo);
 
         // First platform in level that moves left to right
@@ -2587,52 +2721,60 @@ public class DungeonTales extends JFrame {
         // Platform in center of screen that
         Platform Plat10 = new Platform(935, 705, 1580, 705, 100, 15, two, 10, 2);
 
-           // Level 3
+        // Level 3
+
+        // Create the spikes for level 3
         Rectangle[] spikesThree = {new Rectangle(330, 570, 120, 30),
-          new Rectangle (0, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (110, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (220, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (330, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (440, SCREEN_HEIGHT - 60, 120, 30),  
-          new Rectangle (700, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (780, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (900, 170, 120, 30),
-          new Rectangle (1280, 170, 120, 30),
-          new Rectangle (930, SCREEN_HEIGHT - 60, 120, 30),
-          new Rectangle (1030, SCREEN_HEIGHT - 60, 120, 30), 
-          new Rectangle (1140, SCREEN_HEIGHT - 60, 120, 30), 
-          new Rectangle (1250, SCREEN_HEIGHT - 60, 120, 30), 
-          new Rectangle (1360, SCREEN_HEIGHT - 60, 120, 30), 
+                new Rectangle(0, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(110, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(220, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(330, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(440, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(700, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(780, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(900, 170, 120, 30),
+                new Rectangle(1280, 170, 120, 30),
+                new Rectangle(930, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(1030, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(1140, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(1250, SCREEN_HEIGHT - 60, 120, 30),
+                new Rectangle(1360, SCREEN_HEIGHT - 60, 120, 30),
         };
-        
+
+        // Create the platforms for level 3
         Rectangle[] threePlats = {
-          new Rectangle(0, 300, 300, 30),
-          new Rectangle (450, 0, 30, SCREEN_HEIGHT - 300),
-          new Rectangle (150, 600, 300, 30),
-          new Rectangle (900, 200, 30, SCREEN_HEIGHT),
-          new Rectangle (1400, 0, 30, SCREEN_HEIGHT - 250),
-          new Rectangle (930, 200, 180, 30),
-          new Rectangle (1240, 200, 160, 30),
-          new Rectangle (930, 400, 180, 30),
-          new Rectangle (1240, 400, 160, 30),
-          new Rectangle (930, 600, 180, 30),
-          new Rectangle (1240, 600, 160, 30),
-          new Rectangle (930, 800, 180, 30),
-          new Rectangle (1240, 800, 160, 30),
+                new Rectangle(0, 300, 300, 30),
+                new Rectangle(450, 0, 30, SCREEN_HEIGHT - 300),
+                new Rectangle(150, 600, 300, 30),
+                new Rectangle(900, 200, 30, SCREEN_HEIGHT),
+                new Rectangle(1400, 0, 30, SCREEN_HEIGHT - 250),
+                new Rectangle(930, 200, 180, 30),
+                new Rectangle(1240, 200, 160, 30),
+                new Rectangle(930, 400, 180, 30),
+                new Rectangle(1240, 400, 160, 30),
+                new Rectangle(930, 600, 180, 30),
+                new Rectangle(1240, 600, 160, 30),
+                new Rectangle(930, 800, 180, 30),
+                new Rectangle(1240, 800, 160, 30),
         };
-        
+
+        // Create the level instance for level 3
         Level three = new Level(3, 40, 150, SCREEN_WIDTH - 350, 200, p, threePlats, 6,
-                                spikesThree);
-        
-        Platform threePlat1 = new Platform (0, SCREEN_HEIGHT - 175, 500, SCREEN_HEIGHT - 175, 90, 30, three, 1, 4);
-        Platform threePlat2 = new Platform (SCREEN_WIDTH - 430, SCREEN_HEIGHT - 700, SCREEN_WIDTH - 430, SCREEN_HEIGHT - 90, 90 , 30, three, 2, 2);
-        Platform threePlat3 = new Platform (800, SCREEN_HEIGHT - 400, 800, SCREEN_HEIGHT - 100, 90, 30, three, 3, 2);
-        Platform threePlat4 = new Platform (500, SCREEN_HEIGHT - 700, 500, SCREEN_HEIGHT - 320, 90, 30, three, 4, 2);
-        Platform threePlat5 = new Platform (800, SCREEN_HEIGHT - 960, 800, SCREEN_HEIGHT - 680, 90, 30, three, 5, 2);
-        Platform threePlat6 = new Platform (930, SCREEN_HEIGHT - 100, 1450, SCREEN_HEIGHT - 100, 90, 30, three, 6, 5);
+                spikesThree);
+
+        // Create the moving platforms for level 3
+        Platform threePlat1 = new Platform(0, SCREEN_HEIGHT - 175, 500, SCREEN_HEIGHT - 175, 90, 30, three, 1, 4);
+        Platform threePlat2 = new Platform(SCREEN_WIDTH - 430, SCREEN_HEIGHT - 700, SCREEN_WIDTH - 430, SCREEN_HEIGHT - 90, 90, 30, three, 2, 2);
+        Platform threePlat3 = new Platform(800, SCREEN_HEIGHT - 400, 800, SCREEN_HEIGHT - 100, 90, 30, three, 3, 2);
+        Platform threePlat4 = new Platform(500, SCREEN_HEIGHT - 700, 500, SCREEN_HEIGHT - 320, 90, 30, three, 4, 2);
+        Platform threePlat5 = new Platform(800, SCREEN_HEIGHT - 960, 800, SCREEN_HEIGHT - 680, 90, 30, three, 5, 2);
+        Platform threePlat6 = new Platform(930, SCREEN_HEIGHT - 100, 1450, SCREEN_HEIGHT - 100, 90, 30, three, 6, 5);
     }
-    
-	public static void quitGame() {
+
+    /*
+    Method to quit the game
+     */
+    public static void quitGame() {
         // Create variables to catch the result of the confirmation
         // dialog.
         int result = 0;
@@ -2647,14 +2789,21 @@ public class DungeonTales extends JFrame {
         }
     }
 
+    /*
+    Method to write to the save file
+    @param The text you would like to write
+     */
     public static void writeToFile(String text) throws IOException {
+        // Get the file, make sure it exists.
         File save = new File("save.txt");
         if (!save.exists()) {
             return;
         }
 
+        // Write to the file
         PrintWriter out = new PrintWriter(new FileWriter(save, true));
         out.println(text);
+        // Close the writer.
         out.close();
     }
 

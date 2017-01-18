@@ -2587,22 +2587,52 @@ public class DungeonTales extends JFrame {
         // Platform in center of screen that
         Platform Plat10 = new Platform(935, 705, 1580, 705, 100, 15, two, 10, 2);
 
-        // Level 3
-        Rectangle[] spikesThree = {new Rectangle(370, 270, 120, 30),
-                new Rectangle(480, 270, 120, 30),
-                new Rectangle(590, 270, 120, 30),
-                new Rectangle(700, 270, 120, 30),
-                new Rectangle(810, 270, 120, 30),
-                new Rectangle(920, 270, 120, 30)};
+           // Level 3
+        Rectangle[] spikesThree = {new Rectangle(330, 570, 120, 30),
+          new Rectangle (0, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (110, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (220, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (330, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (440, SCREEN_HEIGHT - 60, 120, 30),  
+          new Rectangle (700, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (780, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (900, 170, 120, 30),
+          new Rectangle (1280, 170, 120, 30),
+          new Rectangle (930, SCREEN_HEIGHT - 60, 120, 30),
+          new Rectangle (1030, SCREEN_HEIGHT - 60, 120, 30), 
+          new Rectangle (1140, SCREEN_HEIGHT - 60, 120, 30), 
+          new Rectangle (1250, SCREEN_HEIGHT - 60, 120, 30), 
+          new Rectangle (1360, SCREEN_HEIGHT - 60, 120, 30), 
+        };
+        
         Rectangle[] threePlats = {
-                new Rectangle(0, 300, SCREEN_WIDTH - 300, 30),
-                new Rectangle(0, 600, SCREEN_WIDTH - 1200, 30),
-                new Rectangle(200, 890, 1400, 30)};
-        Level three = new Level(3, 40, 150, 100, 425, p, threePlats, 0,
-                spikesThree);
+          new Rectangle(0, 300, 300, 30),
+          new Rectangle (450, 0, 30, SCREEN_HEIGHT - 300),
+          new Rectangle (150, 600, 300, 30),
+          new Rectangle (900, 200, 30, SCREEN_HEIGHT),
+          new Rectangle (1400, 0, 30, SCREEN_HEIGHT - 250),
+          new Rectangle (930, 200, 180, 30),
+          new Rectangle (1240, 200, 160, 30),
+          new Rectangle (930, 400, 180, 30),
+          new Rectangle (1240, 400, 160, 30),
+          new Rectangle (930, 600, 180, 30),
+          new Rectangle (1240, 600, 160, 30),
+          new Rectangle (930, 800, 180, 30),
+          new Rectangle (1240, 800, 160, 30),
+        };
+        
+        Level three = new Level(3, 40, 150, SCREEN_WIDTH - 350, 200, p, threePlats, 6,
+                                spikesThree);
+        
+        Platform threePlat1 = new Platform (0, SCREEN_HEIGHT - 175, 500, SCREEN_HEIGHT - 175, 90, 30, three, 1, 4);
+        Platform threePlat2 = new Platform (SCREEN_WIDTH - 430, SCREEN_HEIGHT - 700, SCREEN_WIDTH - 430, SCREEN_HEIGHT - 90, 90 , 30, three, 2, 2);
+        Platform threePlat3 = new Platform (800, SCREEN_HEIGHT - 400, 800, SCREEN_HEIGHT - 100, 90, 30, three, 3, 2);
+        Platform threePlat4 = new Platform (500, SCREEN_HEIGHT - 700, 500, SCREEN_HEIGHT - 320, 90, 30, three, 4, 2);
+        Platform threePlat5 = new Platform (800, SCREEN_HEIGHT - 960, 800, SCREEN_HEIGHT - 680, 90, 30, three, 5, 2);
+        Platform threePlat6 = new Platform (930, SCREEN_HEIGHT - 100, 1450, SCREEN_HEIGHT - 100, 90, 30, three, 6, 5);
     }
-
-    public static void quitGame() {
+    
+	public static void quitGame() {
         // Create variables to catch the result of the confirmation
         // dialog.
         int result = 0;
